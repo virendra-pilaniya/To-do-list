@@ -1,6 +1,37 @@
 document.getElementById("add-task").addEventListener("click", addTask);
 
 var array = [];
+var flag = 1;
+
+if (flag == 1) {
+  fetch("https://jsonplaceholder.typicode.com/todos")
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not OK");
+    }
+    return response.json();
+  })
+  .then((data) => {
+    // Process the received data
+    console.log(data);
+
+    data.forEach((element) => {
+      var task = {
+        text: element.title,
+        id: element.id,
+      };
+
+      array.push(task);
+    });
+  })
+  .catch((error) => {
+    // Handle any errors that occurred during the fetch request
+    console.log("Error:", error.message);
+  });
+
+  flag = 0;
+}
+
 
 function addTask() {
   var taskInput = document.getElementById("task-input");
@@ -22,7 +53,7 @@ function UpdateDisplay() {
   var todoList = document.getElementById("todo-list");
   todoList.innerHTML = "";
 
-  array.forEach(function (task) {
+  array.forEach(function (task, index) { 
     var taskItem = document.createElement("li");
     taskItem.textContent = task.text;
 
@@ -30,42 +61,48 @@ function UpdateDisplay() {
     deleteButton.textContent = "Delete";
 
     deleteButton.addEventListener("click", function () {
-      deleteTask(task.id);
+      deleteTask(index); 
     });
 
     var updateButton = document.createElement("button");
     updateButton.textContent = "Update";
 
     updateButton.addEventListener("click", function () {
-      UpdateTask(task.id);
+      UpdateTask(index); 
     });
 
     taskItem.appendChild(deleteButton);
     taskItem.appendChild(updateButton);
+
     todoList.appendChild(taskItem);
   });
 }
 
-function deleteTask(taskId) {
-  var taskIndex = array.findIndex(function (task) {
-    return task.id === taskId;
-  });
 
-  if (taskIndex !== -1) {
+function deleteTask(taskIndex) {
+  if (taskIndex >= 0 && taskIndex < array.length) {
     array.splice(taskIndex, 1);
 
     UpdateDisplay();
   }
 }
 
-function UpdateTask(taskId) {
-  var taskIndex = array.findIndex(function (task) {
-    return task.id === taskId;
-  });
+function UpdateTask(taskIndex) { 
+  if (taskIndex >= 0 && taskIndex < array.length) {
+    var taskItem = document.createElement("li");
+    taskItem.textContent = array[taskIndex].text;
 
-  if (taskIndex !== -1) {
-    var taskInput = document.getElementById("update-task");
-    taskInput.style.display = "block";
+    var deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+
+    deleteButton.addEventListener("click", function () {
+      deleteTask(taskIndex);
+    });
+
+    var taskInput = document.createElement("input");
+    taskInput.type = "text";
+    taskInput.value = array[taskIndex].text;
+    taskItem.appendChild(taskInput);
 
     var updateButton = document.createElement("button");
     updateButton.textContent = "Update";
@@ -76,36 +113,13 @@ function UpdateTask(taskId) {
       if (taskText !== "") {
         array[taskIndex].text = taskText;
         UpdateDisplay();
-        taskInput.style.display = "none";
-        taskInput.value = "";
       }
     });
 
-    taskInput.value = array[taskIndex].text;
+    taskItem.appendChild(updateButton);
 
     var todoList = document.getElementById("todo-list");
-    todoList.innerHTML = "";
-
-    array.forEach(function (task) {
-      var taskItem = document.createElement("li");
-      taskItem.textContent = task.text;
-
-      var deleteButton = document.createElement("button");
-      deleteButton.textContent = "Delete";
-
-      deleteButton.addEventListener("click", function () {
-        deleteTask(task.id);
-      });
-
-      taskItem.appendChild(deleteButton);
-
-      if (task.id === taskId) {
-        taskItem.appendChild(taskInput);
-        taskItem.appendChild(updateButton);
-      }
-
-      todoList.appendChild(taskItem);
-    });
+    todoList.replaceChild(taskItem, todoList.childNodes[taskIndex]);
   }
 }
 

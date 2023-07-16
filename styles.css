@@ -2,6 +2,15 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f2f2f2;
   padding: 20px;
+  background-image: url("assets/background.jpg");
+}
+
+input {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  width: 300px;
 }
 
 h1 {
@@ -18,21 +27,13 @@ h1 {
   margin-left: 520px;
 }
 
-#update-task {
-  display: none;
-  margin-bottom: 10px;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  width: 300px;
-}
-
 li {
   margin-top: 20px;
-  margin-left: 540px;
+  margin-left: 512px;
   color: purple;
   font-size: large;
   font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
 }
 
 button {
@@ -46,6 +47,10 @@ button {
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
+  border-radius: 25px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 550;
+  margin-left: 8px;
 }
 
 .task-item .task-text {
@@ -82,3 +87,12 @@ button {
   margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+/* 
+var list = btn.parentNode;
+    
+    var taskInput = document.createElement("input");
+    
+    if (taskInput.value !== "") {
+      array[taskIndex] = taskInput.value;
+      list.innerHTML = taskInput.innerHTML;
+    } */
