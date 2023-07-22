@@ -276,30 +276,33 @@ const searchInput = document.querySelector("#search");
 
 searchInput.addEventListener("input", function (e) {
     const searchStr = e.target.value.toLowerCase();
-
+  
     let liTag = "";
     if (todos) {
-        todos.forEach((todo, id) => {
-            let completed = todo.status == "completed" ? "checked" : "";
-            console.log(todo.name.toLowerCase());
-            if (todo.name.toLowerCase().indexOf(searchStr) > -1) {
-                liTag += `<li class="task">
+      todos.forEach((todo, id) => {
+        let completed = todo.status == "completed" ? "checked" : "";
+        console.log(todo.name.toLowerCase());
+        if (
+          todo.name.toLowerCase().indexOf(searchStr) > -1 ||
+          containsSubtask(todo.subtasks, searchStr)
+        ) {
+          liTag += `<li class="task">
             <label for="${id}">
               <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
               <p class="${completed}">${todo.name}</p>
               <p class="deadline">Deadline: ${formatDate(todo.deadline)}</p>
               <p class="priority">Priority: ${todo.priority}</p>
-              <p class="priority">Category: ${todo.category}</p>
+              <p class="category">Category: ${todo.category}</p>
             </label>
             <button class="addSubtaskBtn" onclick="showAddSubtaskInput(${id})">Add Subtask</button>`;
-
-                if (todo.subtasks && todo.subtasks.length > 0) {
-                    liTag += `<ul class="subtasks">`;
-
-                    todo.subtasks.forEach((subtask, subtaskId) => {
-                        let subtaskCompleted =
-                            subtask.status === "completed" ? "checked" : "";
-                        liTag += `<li class="subtask">
+  
+          if (todo.subtasks && todo.subtasks.length > 0) {
+            liTag += `<ul class="subtasks">`;
+  
+            todo.subtasks.forEach((subtask, subtaskId) => {
+              let subtaskCompleted =
+                subtask.status === "completed" ? "checked" : "";
+              liTag += `<li class="subtask">
                 <label for="${id}-${subtaskId}">
                   <input onclick="updateSubtaskStatus(${id}, ${subtaskId})" type="checkbox" id="${id}-${subtaskId}" ${subtaskCompleted}>
                   <p class="${subtaskCompleted}">${subtask.name}</p>
@@ -307,30 +310,36 @@ searchInput.addEventListener("input", function (e) {
                 <div class="subtask-settings">
                   <ul class="task-menu">
                     <button class="inside_btn3" onclick='editSubtask(${id}, ${subtaskId}, "${subtask.name
-                            }", ${subtask.deadline ? `"${subtask.deadline}"` : null}, "${subtask.priority
-                            }", "${subtask.category}")'><i class="uil uil-pen"></i></button>
+                      }", ${subtask.deadline ? `"${subtask.deadline}"` : null}, "${subtask.priority
+                      }", "${subtask.category}")'><i class="uil uil-pen"></i></button>
                     <button class="inside_btn4" onclick='deleteSubtask(${id}, ${subtaskId})'><i class="uil uil-trash"></i></button>
                   </ul>
                 </div>
               </li>`;
-                    });
-
-                    liTag += `</ul>`;
-                }
-
-                liTag += `
-                <div class="settings">
+            });
+  
+            liTag += `</ul>`;
+          }
+  
+          liTag += `
+            <div class="settings">
               <ul class="task-menu">
                 <button class="inside_btn" onclick='editTask(${id}, "${todo.name}")'><i class="uil uil-pen"></i>Edit</button>
                 <button class="inside_btn2" onclick='deleteTask(${id})'><i class="uil uil-trash"></i>Delete</button>
               </ul>
             </div>
-                </li>`;
-            }
-        });
+          </li>`;
+        }
+      });
     }
     taskBox.innerHTML = liTag || `<span>You don't have any task here</span>`;
-});
+  });
+  
+  function containsSubtask(subtasks, searchStr) {
+    if (!subtasks) return false;
+    return subtasks.some((subtask) => subtask.name.toLowerCase().indexOf(searchStr) > -1);
+  }
+  
 
 function formatDate(dateString) {
     const options = {
