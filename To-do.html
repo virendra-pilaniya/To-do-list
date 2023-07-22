@@ -1,21 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>To-do list</title>
+<html lang="en" dir="ltr">
 
-    <link rel="stylesheet" href="styles.css" />
-  </head>
+<head>
+    <meta charset="utf-8">
+    <title>Todo List App</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
 
-  <body>
-    <h1>To-do List</h1>
+<body>
+    <h1>My Todo list App</h1>
+    <div class="wrapper">
+        <div class="task-input">
+            <input type="text" placeholder="Add a new task" class="text_input">
+            <input type="datetime-local" placeholder="Add deadline" class="deadline_input">
+            <label for="priority-select" class="p_s">Priority:</label>
+            <select class="priority-select" id="priority-select">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+            <label for="category-select" class="c_s">Category:</label>
+            <select class="category-select" id="category-select">
+                <option value="low">Official</option>
+                <option value="medium">Home</option>
+                <option value="high">sports</option>
+                <option value="high">Education</option>
+                <option value="high">shopping</option>
+            </select>
+            <button class="addTasking">Add</button>
+        </div>
+        <div class="controls">
+            <div class="filters">
+                <span class="active" id="all">All</span>
+                <span id="pending">Pending</span>
+                <span id="completed">Completed</span>
+            </div>
 
-    <input type="text" id="task-input" placeholder="Add a task" />
-    <button id="add-task">Add</button>
-  
-    <ol id="todo-list"></ol>
-    
+            <button class="expired">Expired</button>
+            <input type="search" placeholder="Search...." id="search">
+            <button class="clear-btn">Clear All</button>
+        </div>
+        <ul class="task-box"></ul>
+    </div>
+
     <script src="script.js"></script>
-  </body>
+
+</body>
+
 </html>
