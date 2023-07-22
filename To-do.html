@@ -22,14 +22,11 @@
                 <option value="high">High</option>
             </select>
             <label for="category-select" class="c_s">Category:</label>
-            <select class="category-select" id="category-select">
-                <option value="low">Official</option>
-                <option value="medium">Home</option>
-                <option value="high">sports</option>
-                <option value="high">Education</option>
-                <option value="high">shopping</option>
-            </select>
+            <input type="text" placeholder="Category" class="category-select">
+            <label for="tag-select" class="t_s">Tags:</label>
+            <input type="text" placeholder="Tags" class="tag-select">
             <button class="addTasking">Add</button>
+
         </div>
         <div class="controls">
             <div class="filters">
@@ -37,14 +34,36 @@
                 <span id="pending">Pending</span>
                 <span id="completed">Completed</span>
             </div>
-
+            <button id="sorting-deadline">Sort by Deadline</button>
+            <button id="sorting-priority">Sort by Priority</button>
+            <button id="sorting-category">Sort by Category</button>
             <button class="expired">Expired</button>
             <input type="search" placeholder="Search...." id="search">
             <button class="clear-btn">Clear All</button>
+
+        </div>
+        <div class="controls">
+            <input type="date" id="startDate" placeholder="Start Date" class="xdate">
+            <input type="date" id="endDate" placeholder="End Date" class="xdate">
+            <button class="filter-date-btn">Filter by Date</button>
+            <label for="category-select-1" class="c_s">Category:</label>
+            <input type="text" placeholder="Category" class="category-select-1">
+            <button class="filter-category-btn">Filter by Category</button>
+            
+            <select class="priority-filter" id="priority-filter">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            </select>
+            <button class="filter-by-priority-btn">filter by Priority</button>
         </div>
         <ul class="task-box"></ul>
-    </div>
 
+    </div>
+    <div class="subtask-input-container" style="display: none;">
+        <input type="text" placeholder="Add a new subtask" class="subtask-container">
+        <button class="addSubtaskBtn" onclick="addSubtask()">Add</button>
+    </div>
     <script src="script.js"></script>
 
 </body>

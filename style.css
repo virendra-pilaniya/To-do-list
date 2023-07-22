@@ -1,98 +1,533 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f2f2f2;
-  padding: 20px;
-  background-image: url("assets/background.jpg");
-}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-input {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  width: 300px;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
 h1 {
-  text-align: center;
-  margin-bottom: 20px;
+    text-align: center;
+    color: black;
+    font-size: 40px;
+    font-family: "Ubuntu", sans-serif;
 }
 
-#task-input {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  width: 300px;
-  margin-left: 520px;
+.subtask {
+    margin-right: 100px;
 }
 
+.task-box {
+    font-weight: bold;
+    font-family: cursive;
+}
+
+.subtask-container {
+    height: 30px;
+    width: 250px;
+    outline: none;
+    margin-left: 660px;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0 20px 0 53px;
+    border: 1px solid #999;
+}
+
+body {
+    /* width: 100%;
+    height: 100%;
+    overflow: hidden; */
+    background-image: url("assets/background.jpg");
+}
+
+::selection {
+    color: #fff;
+    background: #3C87FF;
+}
+
+.wrapper {
+    max-width: 1400px;
+    height: 100%;
+    padding: 28px 0 30px;
+    margin: 70px auto;
+    background: pink;
+    border-radius: 7px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.task-input {
+    height: 52px;
+    padding: 0 25px;
+    position: relative;
+}
+
+.addTasking {
+    border: none;
+    border-radius: 4px;
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+    width: 90px;
+    height: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.task-input img {
+    top: 50%;
+    position: absolute;
+    transform: translate(17px, -50%);
+}
+
+.text_input {
+    height: 70%;
+    width: 22%;
+    outline: none;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0 20px 0 53px;
+    border: 1px solid #999;
+}
+
+.priority-select {
+    font-size: 18px;
+}
+
+.tag-select {
+    font-size: 18px;
+}
+
+
+.category-select {
+    font-size: 16.4px;
+}
+
+.p_s {
+    font-size: 18px;
+}
+
+.c_s {
+    font-size: 18px;
+}
+
+.t_s {
+    font-size: 18px;
+}
+
+.deadline_input {
+    height: 70%;
+    width: 16%;
+    outline: none;
+    text-align: left;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0 20px 0 53px;
+    border: 1px solid #999;
+}
+
+.xdate {
+    outline: none;
+    text-align: left;
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0px 20px 0px 53px;
+    border: 1px solid rgb(153, 153, 153);
+}
+
+.category-filter-select {
+    outline: none;
+    text-align: left;
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0px 20px 0px 53px;
+    border: 1px solid rgb(153, 153, 153);
+}
+
+.category-select {
+    width: 175px;
+    height: 30px;
+    outline: none;
+    text-align: left;
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0px 20px 0px 53px;
+    border: 1px solid rgb(153, 153, 153);
+}
+
+.category-select-1 {
+    width: 175px;
+    height: 30px;
+    outline: none;
+    text-align: left;
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0px 20px 0px 53px;
+    border: 1px solid rgb(153, 153, 153);
+}
+
+
+.tag-select {
+    width: 175px;
+    height: 30px;
+    outline: none;
+    text-align: left;
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0px 20px 0px 53px;
+    border: 1px solid rgb(153, 153, 153);
+}
+
+.priority-select {
+    outline: none;
+    height: 30px;
+    text-align: left;
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif; 
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0px 20px 0px 53px;
+    border: 1px solid rgb(153, 153, 153);
+}
+
+.priority-filter {
+    outline: none;
+    text-align: left;
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0px 20px 0px 53px;
+    border: 1px solid rgb(153, 153, 153);
+}
+
+.task-input input:focus,
+.task-input input.active {
+    padding-left: 52px;
+    border: 2px solid #3C87FF;
+}
+
+.task-input input::placeholder {
+    color: #bfbfbf;
+}
+
+.controls,
 li {
-  margin-top: 20px;
-  margin-left: 512px;
-  color: purple;
-  font-size: large;
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-button {
-  background-color: orange;
-  border: none;
-  color: white;
-  padding: 5px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 25px;
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: 550;
-  margin-left: 8px;
+.controls {
+    padding: 18px 25px;
+    border-bottom: 1px solid #ccc;
 }
 
-.task-item .task-text {
-  flex-grow: 1;
+.filters span {
+    margin: 0 8px;
+    font-size: 19px;
+    font-weight: bold;
+    color: #444444;
+    cursor: pointer;
+    font-family: "Ubuntu", sans-serif;
 }
 
-#add-task,
-.task-item button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  background-color: #4caf50;
-  color: white;
-  cursor: pointer;
-  margin-left: 10px;
+.filters span:first-child {
+    margin-left: 0;
 }
 
-#add-task {
-  margin-right: 10px;
+.filters span.active {
+    color: orange;
 }
 
-.task-list {
-  list-style-type: none;
-  padding: 0;
+#sorting-deadline {
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 7px 13px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #1798fb 0%, #2D5CFE 100%);
 }
 
-.task-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #fff;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+#sorting-priority {
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 7px 13px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #1798fb 0%, #2D5CFE 100%);
 }
+
+.filter-date-btn {
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 7px 13px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #1798fb 0%, #2D5CFE 100%);
+}
+
+.filter-category-btn {
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 7px 13px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #1798fb 0%, #2D5CFE 100%);
+}
+
+.filter-by-priority-btn {
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 7px 13px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #1798fb 0%, #2D5CFE 100%);
+}
+
+#sorting-category {
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 7px 13px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #1798fb 0%, #2D5CFE 100%);
+}
+
+.expired {
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 7px 13px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #1798fb 0%, #2D5CFE 100%);
+}
+
+.controls .clear-btn {
+    border: none;
+    opacity: 0.6;
+    outline: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 7px 13px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    pointer-events: none;
+    transition: transform 0.25s ease;
+    background: linear-gradient(135deg, #1798fb 0%, #2D5CFE 100%);
+}
+
+.clear-btn.active {
+    opacity: 0.9;
+    pointer-events: auto;
+}
+
+.clear-btn:active {
+    transform: scale(0.93);
+}
+
+.task-box {
+    margin-top: 20px;
+    margin-right: 5px;
+    padding: 0 20px 10px 25px;
+}
+
+.inside_btn {
+    border: none;
+    border-radius: 4px;
+    background-color: orange;
+    color: white;
+    cursor: pointer;
+    width: 70px;
+    height: 35px;
+    text-align: center;
+}
+
+.inside_btn2 {
+    border: none;
+    border-radius: 4px;
+    background-color: red;
+    color: white;
+    cursor: pointer;
+    width: 70px;
+    height: 35px;
+    text-align: center;
+}
+
+.inside_btn3 {
+    border: none;
+    border-radius: 4px;
+    background-color: red;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+}
+
+
+.inside_btn4 {
+    border: none;
+    border-radius: 4px;
+    background-color: orange;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+}
+
+.addSubtaskBtn {
+    border: none;
+    border-radius: 4px;
+    background-color: purple;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    width: 90px;
+    height: 35px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif
+}
+
+/* .task-box.overflow{
+  overflow-y: auto;
+  max-height: 300px;
+} */
+
 /* 
-var list = btn.parentNode;
-    
-    var taskInput = document.createElement("input");
-    
-    if (taskInput.value !== "") {
-      array[taskIndex] = taskInput.value;
-      list.innerHTML = taskInput.innerHTML;
-    } */
+.task-box::-webkit-scrollbar{
+  width: 5px;
+}
+.task-box::-webkit-scrollbar-track{
+  background: #f1f1f1;
+  border-radius: 25px;
+}
+.task-box::-webkit-scrollbar-thumb{
+  background: #e6e6e6;
+  border-radius: 25px;
+} */
+.task-box .task {
+    list-style: none;
+    font-size: 17px;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    align-items: flex-start;
+    border-bottom: 1px solid #ccc;
+}
+
+
+.task-box .task:last-child {
+    margin-bottom: 0;
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+
+.task-box .task label {
+    display: flex;
+    align-items: flex-start;
+}
+
+.task label input {
+    margin-top: 7px;
+    accent-color: #3C87FF;
+}
+
+.task label p {
+    user-select: none;
+    margin-left: 12px;
+    word-wrap: break-word;
+}
+
+.task label p.checked {
+    text-decoration: line-through;
+}
+
+/* .task-box .settings{
+  position: relative;
+} */
+/* .settings :where(i, li){
+  cursor: pointer;
+}
+.settings .task-menu{
+  z-index: 10;
+  right: -5px;
+  bottom: -65px;
+  padding: 5px 0;
+  background: #fff;
+  position: absolute;
+  border-radius: 4px;
+  transform: scale(0);
+  transform-origin: top right;
+  box-shadow: 0 0 6px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease;
+} */
+/* .task-box .task:last-child .task-menu{
+  bottom: 0;
+  transform-origin: bottom right;
+}
+.task-box .task:first-child .task-menu{
+  bottom: -65px;
+  transform-origin: top right;
+} */
+/* .task-menu.show{
+  transform: scale(1);
+}
+.task-menu li{
+  height: 25px;
+  font-size: 16px;
+  margin-bottom: 2px;
+  padding: 17px 15px;
+  cursor: pointer;
+  justify-content: flex-start;
+}
+.task-menu li:last-child{
+  margin-bottom: 0;
+}
+.settings li:hover{
+  background: #f5f5f5;
+}
+.settings li i{
+  padding-right: 8px;
+} */
+/* 
+@media (max-width: 400px) {
+  body{
+    padding: 0 10px;
+  }
+  .wrapper {
+    padding: 20px 0;
+  }
+  .filters span{
+    margin: 0 5px;
+  }
+  .task-input{
+    padding: 0 20px;
+  }
+  .controls{
+    padding: 18px 20px;
+  }
+  .task-box{
+    margin-top: 20px;
+    margin-right: 5px;
+    padding: 0 15px 10px 20px;
+  }
+  .task label input{
+    margin-top: 4px;
+  }
+} */
