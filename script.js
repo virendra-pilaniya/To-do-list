@@ -276,70 +276,20 @@ const searchInput = document.querySelector("#search");
 
 searchInput.addEventListener("input", function (e) {
     const searchStr = e.target.value.toLowerCase();
-  
-    let liTag = "";
-    if (todos) {
-      todos.forEach((todo, id) => {
-        let completed = todo.status == "completed" ? "checked" : "";
-        console.log(todo.name.toLowerCase());
-        if (
-          todo.name.toLowerCase().indexOf(searchStr) > -1 ||
-          containsSubtask(todo.subtasks, searchStr)
-        ) {
-          liTag += `<li class="task">
-            <label for="${id}">
-              <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
-              <p class="${completed}">${todo.name}</p>
-              <p class="deadline">Deadline: ${formatDate(todo.deadline)}</p>
-              <p class="priority">Priority: ${todo.priority}</p>
-              <p class="category">Category: ${todo.category}</p>
-            </label>
-            <button class="addSubtaskBtn" onclick="showAddSubtaskInput(${id})">Add Subtask</button>`;
-  
-          if (todo.subtasks && todo.subtasks.length > 0) {
-            liTag += `<ul class="subtasks">`;
-  
-            todo.subtasks.forEach((subtask, subtaskId) => {
-              let subtaskCompleted =
-                subtask.status === "completed" ? "checked" : "";
-              liTag += `<li class="subtask">
-                <label for="${id}-${subtaskId}">
-                  <input onclick="updateSubtaskStatus(${id}, ${subtaskId})" type="checkbox" id="${id}-${subtaskId}" ${subtaskCompleted}>
-                  <p class="${subtaskCompleted}">${subtask.name}</p>
-                </label>
-                <div class="subtask-settings">
-                  <ul class="task-menu">
-                    <button class="inside_btn3" onclick='editSubtask(${id}, ${subtaskId}, "${subtask.name
-                      }", ${subtask.deadline ? `"${subtask.deadline}"` : null}, "${subtask.priority
-                      }", "${subtask.category}")'><i class="uil uil-pen"></i></button>
-                    <button class="inside_btn4" onclick='deleteSubtask(${id}, ${subtaskId})'><i class="uil uil-trash"></i></button>
-                  </ul>
-                </div>
-              </li>`;
-            });
-  
-            liTag += `</ul>`;
-          }
-  
-          liTag += `
-            <div class="settings">
-              <ul class="task-menu">
-                <button class="inside_btn" onclick='editTask(${id}, "${todo.name}")'><i class="uil uil-pen"></i>Edit</button>
-                <button class="inside_btn2" onclick='deleteTask(${id})'><i class="uil uil-trash"></i>Delete</button>
-              </ul>
-            </div>
-          </li>`;
-        }
-      });
-    }
-    taskBox.innerHTML = liTag || `<span>You don't have any task here</span>`;
-  });
-  
-  function containsSubtask(subtasks, searchStr) {
+
+    const filteredTodos = todos.filter((todo) => {
+        return ((todo.name.toLowerCase().indexOf(searchStr) > -1) ||
+            (containsSubtask(todo.subtasks, searchStr)));
+    });
+
+    View_Todo_list(filteredTodos);
+});
+
+function containsSubtask(subtasks, searchStr) {
     if (!subtasks) return false;
-    return subtasks.some((subtask) => subtask.name.toLowerCase().indexOf(searchStr) > -1);
-  }
-  
+    return (subtasks.some((subtask) => subtask.name.toLowerCase().indexOf(searchStr) > -1));
+}
+
 
 function formatDate(dateString) {
     const options = {
@@ -357,64 +307,14 @@ function formatDate(dateString) {
 }
 
 expired.addEventListener("click", () => {
-    showExpiredTasks();
+    const filteredTodos = todos.filter((todo) => {
+        let deadline = new Date(todo.deadline);
+        let currentDate = new Date();
+        return (!isNaN(deadline) && deadline < currentDate);
+    });
+
+    View_Todo_list(filteredTodos);
 });
-
-function showExpiredTasks() {
-    let liTag = "";
-    if (todos) {
-        todos.forEach((todo, id) => {
-            let completed = todo.status == "completed" ? "checked" : "";
-            let deadline = new Date(todo.deadline);
-            if (!isNaN(deadline) && deadline < currentDate) {
-                liTag += `<li class="task">
-            <label for="${id}">
-              <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
-              <p class="${completed}">${todo.name}</p>
-              <p class="deadline">Deadline: ${formatDate(todo.deadline)}</p>
-              <p class="priority">Priority: ${todo.priority}</p>
-              <p class="priority">Category: ${todo.category}</p>
-            </label>
-            <button class="addSubtaskBtn" onclick="showAddSubtaskInput(${id})">Add Subtask</button>`;
-
-                if (todo.subtasks && todo.subtasks.length > 0) {
-                    liTag += `<ul class="subtasks">`;
-
-                    todo.subtasks.forEach((subtask, subtaskId) => {
-                        let subtaskCompleted =
-                            subtask.status === "completed" ? "checked" : "";
-                        liTag += `<li class="subtask">
-                <label for="${id}-${subtaskId}">
-                  <input onclick="updateSubtaskStatus(${id}, ${subtaskId})" type="checkbox" id="${id}-${subtaskId}" ${subtaskCompleted}>
-                  <p class="${subtaskCompleted}">${subtask.name}</p>
-                </label>
-                <div class="subtask-settings">
-                  <ul class="task-menu">
-                    <button class="inside_btn3" onclick='editSubtask(${id}, ${subtaskId}, "${subtask.name
-                            }", ${subtask.deadline ? `"${subtask.deadline}"` : null}, "${subtask.priority
-                            }", "${subtask.category}")'><i class="uil uil-pen"></i></button>
-                    <button class="inside_btn4" onclick='deleteSubtask(${id}, ${subtaskId})'><i class="uil uil-trash"></i></button>
-                  </ul>
-                </div>
-              </li>`;
-                    });
-
-                    liTag += `</ul>`;
-                }
-
-                liTag += `
-                <div class="settings">
-              <ul class="task-menu">
-                <button class="inside_btn" onclick='editTask(${id}, "${todo.name}")'><i class="uil uil-pen"></i>Edit</button>
-                <button class="inside_btn2" onclick='deleteTask(${id})'><i class="uil uil-trash"></i>Delete</button>
-              </ul>
-            </div>
-                </li>`;
-            }
-        });
-    }
-    taskBox.innerHTML = liTag || `<span>You don't have any task here</span>`;
-}
 
 sortingDeadlineBtn.addEventListener("click", () => {
     showTodoBySorting("deadline");
@@ -450,56 +350,7 @@ function showTodoBySorting(sortingType) {
         }
     }
 
-    let liTag = "";
-    if (sortedTodos) {
-        sortedTodos.forEach((todo, id) => {
-            let completed = todo.status == "completed" ? "checked" : "";
-            liTag += `<li class="task">
-                <label for="${id}">
-                  <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
-                  <p class="${completed}">${todo.name}</p>
-                  <p class="deadline">Deadline: ${formatDate(todo.deadline)}</p>
-                  <p class="priority">Priority: ${todo.priority}</p>
-                  <p class="priority">Category: ${todo.category}</p>
-                </label>
-                <button class="addSubtaskBtn" onclick="showAddSubtaskInput(${id})">Add Subtask</button>`;
-
-            if (todo.subtasks && todo.subtasks.length > 0) {
-                liTag += `<ul class="subtasks">`;
-
-                todo.subtasks.forEach((subtask, subtaskId) => {
-                    let subtaskCompleted =
-                        subtask.status === "completed" ? "checked" : "";
-                    liTag += `<li class="subtask">
-                    <label for="${id}-${subtaskId}">
-                      <input onclick="updateSubtaskStatus(${id}, ${subtaskId})" type="checkbox" id="${id}-${subtaskId}" ${subtaskCompleted}>
-                      <p class="${subtaskCompleted}">${subtask.name}</p>
-                    </label>
-                    <div class="subtask-settings">
-                      <ul class="task-menu">
-                        <button class="inside_btn3" onclick='editSubtask(${id}, ${subtaskId}, "${subtask.name
-                        }", ${subtask.deadline ? `"${subtask.deadline}"` : null}, "${subtask.priority
-                        }", "${subtask.category}")'><i class="uil uil-pen"></i></button>
-                        <button class="inside_btn4" onclick='deleteSubtask(${id}, ${subtaskId})'><i class="uil uil-trash"></i></button>
-                      </ul>
-                    </div>
-                  </li>`;
-                });
-
-                liTag += `</ul>`;
-            }
-
-            liTag += `
-                    <div class="settings">
-                  <ul class="task-menu">
-                    <button class="inside_btn" onclick='editTask(${id}, "${todo.name}")'><i class="uil uil-pen"></i>Edit</button>
-                    <button class="inside_btn2" onclick='deleteTask(${id})'><i class="uil uil-trash"></i>Delete</button>
-                  </ul>
-                </div>
-                    </li>`;
-        });
-    }
-    taskBox.innerHTML = liTag || `<span>You don't have any task here</span>`;
+    View_Todo_list(sortedTodos);
 }
 
 const filter_date_Btn = document.querySelector(".filter-date-btn");
@@ -547,7 +398,7 @@ filter_date_Btn.addEventListener("click", () => {
 function showTodoByDueDate(startDate, endDate) {
     const filteredTodos = todos.filter((todo) => {
         const dueDate = new Date(todo.deadline);
-        return dueDate >= new Date(startDate) && dueDate <= new Date(endDate);
+        return (dueDate >= new Date(startDate) && dueDate <= new Date(endDate));
     });
 
     View_Todo_list(filteredTodos);
