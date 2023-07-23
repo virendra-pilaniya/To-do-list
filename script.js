@@ -329,7 +329,9 @@ clearAll.addEventListener("click", () => {
     isEditTask = false;
     issubEditTask = false;
     todos.splice(0, todos.length);
+    activity_logs.splice(0, activity_logs.length);
     localStorage.setItem("todo-list", JSON.stringify(todos));
+    localStorage.setItem("activity-box", JSON.stringify(activity_logs));
     showTodo();
 });
 
