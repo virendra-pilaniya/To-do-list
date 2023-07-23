@@ -207,15 +207,15 @@ function showTodo(filter) {
 
 showTodo("all");
 
-// function showMenu(selectedTask) {
-//     let menuDiv = selectedTask.parentElement.lastElementChild;
-//     menuDiv.classList.add("show");
-//     document.addEventListener("click", (e) => {
-//         if (e.target.tagName != "I" || e.target != selectedTask) {
-//             menuDiv.classList.remove("show");
-//         }
-//     });
-// }
+function showMenu(selectedTask) {
+    let menuDiv = selectedTask.parentElement.lastElementChild;
+    menuDiv.classList.add("show");
+    document.addEventListener("click", (e) => {
+        if (e.target.tagName != "I" || e.target != selectedTask) {
+            menuDiv.classList.remove("show");
+        }
+    });
+}
 
 function updateStatus(selectedTask) {
     let taskName = selectedTask.parentElement.lastElementChild;
@@ -261,11 +261,13 @@ function showAddSubtaskInput(taskId) {
             .querySelector("input")
             .value.trim();
         if (subtaskName) {
+            addSubtaskToMainTask(taskId, subtaskName);
             subtaskInputContainer.style.display = "none";
         }
     };
     showTodo("all");
 }
+
 
 function editSubtask(
     taskId,
@@ -290,7 +292,7 @@ function editSubtask(
         const newSubtaskName = subtaskInput.value.trim();
         if (newSubtaskName) {
             todos[taskId].subtasks[subtaskId].name = newSubtaskName;
-            addToSubtaskActivityLog(todos[taskId].name, newSubtaskName, "sub_task_edited")
+            addToSubtaskActivityLog(todos[taskId].name, newSubtaskName, "sub_task_edited");
             localStorage.setItem("todo-list", JSON.stringify(todos));
             showTodo("all");
             subtask.querySelector("p").textContent = newSubtaskName;
@@ -304,8 +306,8 @@ function addSubtaskToMainTask(taskId, subtaskName) {
     const subtask = createTaskObject(subtaskName, "pending", null, "low", "Home");
     todos[taskId].subtasks.push(subtask);
     localStorage.setItem("todo-list", JSON.stringify(todos));
-    showTodo("all");
     addToSubtaskActivityLog(todos[taskId].name, subtaskName, "sub_task_created");
+    showTodo("all");
 }
 
 function updateSubtaskStatus(taskId, subtaskId) {
@@ -319,7 +321,7 @@ function updateSubtaskStatus(taskId, subtaskId) {
 }
 
 function deleteSubtask(taskId, subtaskId) {
-    addToSubtaskActivityLog(todos[taskId].name, todos[taskId].subtasks[subtaskId].name, "sub_task_deleted")
+    addToSubtaskActivityLog(todos[taskId].name, todos[taskId].subtasks[subtaskId].name, "sub_task_deleted");
     todos[taskId].subtasks.splice(subtaskId, 1);
     localStorage.setItem("todo-list", JSON.stringify(todos));
     showTodo("all");
