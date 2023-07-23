@@ -184,6 +184,18 @@ body {
     border: 1px solid rgb(153, 153, 153);
 }
 
+#search {
+    width: 175px;
+    height: 30px;
+    outline: none;
+    text-align: left;
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0px 20px 0px 53px;
+    border: 1px solid rgb(153, 153, 153);
+}
+
 .priority-select {
     outline: none;
     height: 30px;
@@ -321,6 +333,17 @@ li {
     background: linear-gradient(135deg, #1798fb 0%, #2D5CFE 100%);
 }
 
+.show-activity-btn {
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 7px 13px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #1798fb 0%, #2D5CFE 100%);
+}
+
 .controls .clear-btn {
     border: none;
     opacity: 0.6;
@@ -392,6 +415,17 @@ li {
     text-align: center;
 }
 
+.check-reminders-btn {
+    border: none;
+    border-radius: 4px;
+    width: 70px;
+    height: 35px;
+    background-color: rgb(225, 0, 255);
+    color: white;
+    cursor: pointer;
+    text-align: center;
+}
+
 .addSubtaskBtn {
     border: none;
     border-radius: 4px;
@@ -458,10 +492,10 @@ li {
     text-decoration: line-through;
 }
 
-/* .task-box .settings{
+.task-box .settings{
   position: relative;
-} */
-/* .settings :where(i, li){
+}
+.settings :where(i, li){
   cursor: pointer;
 }
 .settings .task-menu{
@@ -476,16 +510,16 @@ li {
   transform-origin: top right;
   box-shadow: 0 0 6px rgba(0,0,0,0.15);
   transition: transform 0.2s ease;
-} */
-/* .task-box .task:last-child .task-menu{
+}
+.task-box .task:last-child .task-menu{
   bottom: 0;
   transform-origin: bottom right;
 }
 .task-box .task:first-child .task-menu{
   bottom: -65px;
   transform-origin: top right;
-} */
-/* .task-menu.show{
+}
+.task-menu.show{
   transform: scale(1);
 }
 .task-menu li{
@@ -504,8 +538,8 @@ li {
 }
 .settings li i{
   padding-right: 8px;
-} */
-/* 
+}
+
 @media (max-width: 400px) {
   body{
     padding: 0 10px;
@@ -530,4 +564,4 @@ li {
   .task label input{
     margin-top: 4px;
   }
-} */
+}

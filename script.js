@@ -8,18 +8,20 @@ const taskInput = document.querySelector(".task-input input"),
     prioritySelect = document.querySelector(".task-input .priority-select"),
     categorySelect = document.querySelector(".task-input .category-select"),
     categorySelectN = document.querySelector(".controls .category-select-1"),
-    tagSelect = document.querySelector(".task-input .tag-select"),
+    tagInput = document.querySelector(".task-input .tag-select"),
     expired = document.querySelector(".expired"),
     taskBox = document.querySelector(".task-box"),
     sortingDeadlineBtn = document.getElementById("sorting-deadline"),
     sortingPriorityBtn = document.getElementById("sorting-priority"),
-    sortingCategoryBtn = document.getElementById("sorting-category");
+    sortingCategoryBtn = document.getElementById("sorting-category"),
+    showActivityBtn = document.querySelector(".show-activity-btn");
 
 let editId,
     isEditTask = false,
     subeditId,
     issubEditTask = false,
     todos = JSON.parse(localStorage.getItem("todo-list"));
+    activity_logs = JSON.parse(localStorage.getItem("activity-box")) || [];;
 
 filters.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -35,8 +37,9 @@ function createTaskObject(
     deadline,
     priority,
     category,
-    //   tag = [],
-    subtasks = []
+    tags = [],
+    subtasks = [],
+    action = "created"
 ) {
     return {
         name: name,
@@ -44,8 +47,9 @@ function createTaskObject(
         deadline: deadline,
         priority: priority,
         category: category,
-        // tag: tag,
+        tags: tags,
         subtasks: subtasks,
+        action: action,
     };
 }
 
@@ -54,8 +58,7 @@ addTask.addEventListener("click", () => {
     let deadline = deadlineInput.value;
     let priority = prioritySelect.value;
     let category = categorySelect.value.trim();
-    //   let tag = [];
-    //   tag = tagSelect.split(",").map((item) => item.trim());
+    let tags = tagInput.value.split(",").map(tag => tag.trim());
 
     if (userTask) {
         if (!isEditTask) {
@@ -66,27 +69,71 @@ addTask.addEventListener("click", () => {
                 deadline,
                 priority,
                 category,
-                // tag
+                tags
             );
             todos.push(taskInfo);
+            addToActivityLog(userTask, "created");
         } else {
             isEditTask = false;
+            addToActivityLog(todos[editId].name, "edited");
             todos[editId].name = userTask;
             todos[editId].deadline = deadline;
             todos[editId].priority = priority;
             todos[editId].category = category;
-            //   todos[editId].tag = tag;
+            todos[editId].tags = tags;
         }
         taskInput.value = "";
         deadlineInput.value = "";
         prioritySelect.value = "low";
         categorySelect.value = "Home";
-        // tag = [];
+        tagInput.value = "";
 
         localStorage.setItem("todo-list", JSON.stringify(todos));
         showTodo(document.querySelector("span.active").id);
     }
 });
+
+function getCurrentDateTime() {
+    const options = {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    };
+    const date = new Date();
+    return date.toLocaleDateString(undefined, options);
+}
+
+
+function addToActivityLog(task, action) {
+    const activity = `${getCurrentDateTime()} - ${action} task "${task}"`;
+    activity_logs.push(activity);
+    localStorage.setItem("activity-box", JSON.stringify(activity_logs));
+}
+
+function addToSubtaskActivityLog(task, subtask, action) {
+    const activity = `${getCurrentDateTime()} - ${action} subtask "${subtask}" of task "${task}"`;
+    activity_logs.push(activity);
+    localStorage.setItem("activity-box", JSON.stringify(activity_logs));
+}
+
+showActivityBtn.addEventListener("click", () => {
+    showActivityLog();
+});
+
+function showActivityLog() {
+    let logHtml = "";
+    activity_logs = JSON.parse(localStorage.getItem("activity-box")) || [];
+    if (activity_logs.length > 0) {
+        activity_logs.forEach((log) => {
+            logHtml += `<li>${String(log)}</li>`;
+        });
+    } else {
+        logHtml = `<li>No activity logs available.</li>`;
+    }
+    taskBox.innerHTML = logHtml;
+}
 
 function showTodo(filter) {
     let liTag = "";
@@ -94,13 +141,20 @@ function showTodo(filter) {
         todos.forEach((todo, id) => {
             let completed = todo.status == "completed" ? "checked" : "";
             if (filter == todo.status || filter == "all") {
+                let tagsFormatted = "";
+                if (Array.isArray(todo.tags)) {
+                    tagsFormatted = todo.tags.map(tag => `<span class="tag">${tag}</span>`).join(" ");
+                }
+
+                console.log(tagsFormatted.length);
                 liTag += `<li class="task">
             <label for="${id}">
               <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
               <p class="${completed}">${todo.name}</p>
-              <p class="deadline">Deadline: ${formatDate(todo.deadline)}</p>
-              <p class="priority">Priority: ${todo.priority}</p>
-              <p class="Category">Category: ${todo.category}</p>
+              <p class="deadline"> | Deadline: ${formatDate(todo.deadline)}</p>
+              <p class="priority"> | Priority: ${todo.priority}</p>
+              <p class="Category"> | Category: ${todo.category}</p>
+              <p class="tags"> | Tags: ${tagsFormatted}</p>
             </label>
             <button class="addSubtaskBtn" onclick="showAddSubtaskInput(${id})">Add Subtask</button>`;
 
@@ -132,6 +186,7 @@ function showTodo(filter) {
                 liTag += `
                 <div class="settings">
               <ul class="task-menu">
+                <button class="check-reminders-btn" onclick='checkReminders()' ><iconify-icon icon="uil:clock-three"></iconify-icon>Remind</button>
                 <button class="inside_btn" onclick='editTask(${id}, "${todo.name}")'><i class="uil uil-pen"></i>Edit</button>
                 <button class="inside_btn2" onclick='deleteTask(${id}, "${filter}")'><i class="uil uil-trash"></i>Delete</button>
               </ul>
@@ -152,15 +207,15 @@ function showTodo(filter) {
 
 showTodo("all");
 
-function showMenu(selectedTask) {
-    let menuDiv = selectedTask.parentElement.lastElementChild;
-    menuDiv.classList.add("show");
-    document.addEventListener("click", (e) => {
-        if (e.target.tagName != "I" || e.target != selectedTask) {
-            menuDiv.classList.remove("show");
-        }
-    });
-}
+// function showMenu(selectedTask) {
+//     let menuDiv = selectedTask.parentElement.lastElementChild;
+//     menuDiv.classList.add("show");
+//     document.addEventListener("click", (e) => {
+//         if (e.target.tagName != "I" || e.target != selectedTask) {
+//             menuDiv.classList.remove("show");
+//         }
+//     });
+// }
 
 function updateStatus(selectedTask) {
     let taskName = selectedTask.parentElement.lastElementChild;
@@ -172,6 +227,7 @@ function updateStatus(selectedTask) {
         todos[selectedTask.id].status = "pending";
     }
     localStorage.setItem("todo-list", JSON.stringify(todos));
+    addToActivityLog(todos[selectedTask.id].name, "status_updated");
 }
 
 function editTask(taskId, textName) {
@@ -180,10 +236,12 @@ function editTask(taskId, textName) {
     taskInput.value = textName;
     taskInput.focus();
     taskInput.classList.add("active");
+    addToActivityLog(textName, "edited");
 }
 
 function deleteTask(deleteId, filter) {
     isEditTask = false;
+    addToActivityLog(todos[deleteId].name, "deleted");
     todos.splice(deleteId, 1);
     localStorage.setItem("todo-list", JSON.stringify(todos));
     showTodo(filter);
@@ -203,7 +261,6 @@ function showAddSubtaskInput(taskId) {
             .querySelector("input")
             .value.trim();
         if (subtaskName) {
-            addSubtaskToMainTask(taskId, subtaskName);
             subtaskInputContainer.style.display = "none";
         }
     };
@@ -233,6 +290,7 @@ function editSubtask(
         const newSubtaskName = subtaskInput.value.trim();
         if (newSubtaskName) {
             todos[taskId].subtasks[subtaskId].name = newSubtaskName;
+            addToSubtaskActivityLog(todos[taskId].name, newSubtaskName, "sub_task_edited")
             localStorage.setItem("todo-list", JSON.stringify(todos));
             showTodo("all");
             subtask.querySelector("p").textContent = newSubtaskName;
@@ -247,6 +305,7 @@ function addSubtaskToMainTask(taskId, subtaskName) {
     todos[taskId].subtasks.push(subtask);
     localStorage.setItem("todo-list", JSON.stringify(todos));
     showTodo("all");
+    addToSubtaskActivityLog(todos[taskId].name, subtaskName, "sub_task_created");
 }
 
 function updateSubtaskStatus(taskId, subtaskId) {
@@ -255,10 +314,12 @@ function updateSubtaskStatus(taskId, subtaskId) {
         ? "completed"
         : "pending";
     localStorage.setItem("todo-list", JSON.stringify(todos));
+    addToSubtaskActivityLog(todos[taskId].name, todos[taskId].subtasks[subtaskId].name, "sub_task_status_updated");
     showTodo("all");
 }
 
 function deleteSubtask(taskId, subtaskId) {
+    addToSubtaskActivityLog(todos[taskId].name, todos[taskId].subtasks[subtaskId].name, "sub_task_deleted")
     todos[taskId].subtasks.splice(subtaskId, 1);
     localStorage.setItem("todo-list", JSON.stringify(todos));
     showTodo("all");
@@ -279,7 +340,8 @@ searchInput.addEventListener("input", function (e) {
 
     const filteredTodos = todos.filter((todo) => {
         return ((todo.name.toLowerCase().indexOf(searchStr) > -1) ||
-            (containsSubtask(todo.subtasks, searchStr)));
+            (containsSubtask(todo.subtasks, searchStr)) || (Array.isArray(todo.tags) &&
+            todo.tags.some((tag) => tag.toLowerCase().indexOf(searchStr) > -1)));
     });
 
     View_Todo_list(filteredTodos);
@@ -304,6 +366,20 @@ function formatDate(dateString) {
         return "Invalid Date";
     }
     return date.toLocaleDateString(undefined, options);
+}
+
+function checkReminders() {
+    const today = new Date().toISOString().slice(0, 10);
+    const reminders = todos.filter((todo) => {
+        return todo.deadline && todo.deadline.slice(0, 10) === today;
+    });
+
+    if (reminders.length > 0) {
+        const reminderMessage = reminders.map((reminder) => reminder.name).join(", ");
+        alert(`Today's Reminders: ${reminderMessage}`);
+    } else {
+        alert("No reminders for today.");
+    }
 }
 
 expired.addEventListener("click", () => {
@@ -409,19 +485,25 @@ function View_Todo_list(filteredTodos) {
     if (filteredTodos && filteredTodos.length > 0) {
         filteredTodos.forEach((todo, id) => {
             let completed = todo.status == "completed" ? "checked" : "";
+            let tagsFormatted = "";
+                if (Array.isArray(todo.tags)) {
+                    tagsFormatted = todo.tags.map(tag => `<span class="tag">${tag}</span>`).join(" ");
+                }
             liTag += `<li class="task">
                   <label for="${id}">
                       <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
                       <p class="${completed}">${todo.name}</p>
-                      <p class="deadline">Deadline: ${formatDate(
+                      <p class="deadline"> | Deadline: ${formatDate(
                 todo.deadline
             )}</p>
-                      <p class="priority">Priority: ${todo.priority}</p>
-                      <p class="priority">Category: ${todo.category}</p>
+                      <p class="priority"> | Priority: ${todo.priority}</p>
+                      <p class="priority"> | Category: ${todo.category}</p>
+                      <p class="tags"> | Tags: ${tagsFormatted}</p>
                       <button class="addSubtaskBtn" onclick="addSubtask(${id})">add subtask</button>
                   </label>
                   <div class="settings">
                       <ul class="task-menu">
+                          
                           <button class="inside_btn" onclick='editTask(${id}, "${todo.name
                 }")'><i class="uil uil-pen"></i>Edit</button>
                           <button class="inside_btn2" onclick='deleteTask(${id})'><i class="uil uil-trash"></i>Delete</button>

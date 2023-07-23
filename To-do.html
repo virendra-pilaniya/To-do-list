@@ -29,11 +29,7 @@
 
         </div>
         <div class="controls">
-            <div class="filters">
-                <span class="active" id="all">All</span>
-                <span id="pending">Pending</span>
-                <span id="completed">Completed</span>
-            </div>
+            <button class="show-activity-btn">Show Activity</button> 
             <button id="sorting-deadline">Sort by Deadline</button>
             <button id="sorting-priority">Sort by Priority</button>
             <button id="sorting-category">Sort by Category</button>
@@ -46,18 +42,27 @@
             <input type="date" id="startDate" placeholder="Start Date" class="xdate">
             <input type="date" id="endDate" placeholder="End Date" class="xdate">
             <button class="filter-date-btn">Filter by Date</button>
-            <label for="category-select-1" class="c_s">Category:</label>
-            <input type="text" placeholder="Category" class="category-select-1">
+            <!-- <label for="category-select-1" class="c_s">Category:</label> -->
             <button class="filter-category-btn">Filter by Category</button>
-            
+            <input type="text" placeholder="Category" class="category-select-1">
+            <button class="filter-by-priority-btn">filter by Priority</button>
             <select class="priority-filter" id="priority-filter">
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
             </select>
-            <button class="filter-by-priority-btn">filter by Priority</button>
+            
         </div>
+        <div class="controls">
+            <div class="filters">
+                <span class="active" id="all">All</span>
+                <span id="pending">Pending</span>
+                <span id="completed">Completed</span>
+            </div>   
+        </div>
+        
         <ul class="task-box"></ul>
+        <ul class="activity-box"></ul>
 
     </div>
     <div class="subtask-input-container" style="display: none;">
@@ -65,7 +70,7 @@
         <button class="addSubtaskBtn" onclick="addSubtask()">Add</button>
     </div>
     <script src="script.js"></script>
-
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 </body>
 
 </html>
