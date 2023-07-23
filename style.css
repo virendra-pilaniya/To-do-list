@@ -487,7 +487,3 @@ li {
     margin-left: 12px;
     word-wrap: break-word;
 }
-
-.task label p.checked {
-    text-decoration: line-through;
-}
