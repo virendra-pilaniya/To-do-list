@@ -13,7 +13,8 @@ const taskInput = document.querySelector(".task-input input"),
     sortingDeadlineBtn = document.getElementById("sorting-deadline"),
     sortingPriorityBtn = document.getElementById("sorting-priority"),
     sortingCategoryBtn = document.getElementById("sorting-category"),
-    showActivityBtn = document.querySelector(".show-activity-btn");
+    showActivityBtn = document.querySelector(".show-activity-btn"),
+    ImpCheckbox = document.querySelector(".task-input input[type='checkbox']");
 
 let editId,
     isEditTask = false,
@@ -133,7 +134,7 @@ addTask.addEventListener("click", () => {
     let priority = prioritySelect.value;
     let category = categorySelect.value.trim();
     let tags = tagInput.value.split(",").map(tag => tag.trim());
-    let isImportant = document.querySelector(".task-input input[type='checkbox']").checked;
+    let isImportant = ImpCheckbox.checked;
 
     if (userTask) {
         if (!isEditTask) {
@@ -166,6 +167,7 @@ addTask.addEventListener("click", () => {
         prioritySelect.value = "low";
         categorySelect.value = "Home";
         tagInput.value = "";
+        ImpCheckbox.checked = false;
 
         localStorage.setItem("todo-list", JSON.stringify(todos));
         showTodo(document.querySelector("span.active").id);
