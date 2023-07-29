@@ -3,6 +3,7 @@ const taskInput = document.querySelector(".task-input input"),
     filters = document.querySelectorAll(".filters span"),
     clearAll = document.querySelector(".clear-btn"),
     deadlineInput = document.querySelector(".task-input input[type='datetime-local']"),
+    dateTaskInput = document.querySelector(".task-input .deadline_text_input"),
     prioritySelect = document.querySelector(".task-input .priority-select"),
     categorySelect = document.querySelector(".task-input .category-select"),
     categorySelectN = document.querySelector(".controls .category-select-1"),
@@ -12,7 +13,8 @@ const taskInput = document.querySelector(".task-input input"),
     sortingDeadlineBtn = document.getElementById("sorting-deadline"),
     sortingPriorityBtn = document.getElementById("sorting-priority"),
     sortingCategoryBtn = document.getElementById("sorting-category"),
-    showActivityBtn = document.querySelector(".show-activity-btn");
+    showActivityBtn = document.querySelector(".show-activity-btn"),
+    ImpCheckbox = document.querySelector(".task-input input[type='checkbox']");
 
 let editId,
     isEditTask = false,
@@ -22,6 +24,7 @@ let editId,
     todos = JSON.parse(localStorage.getItem("todo-list"));
 activity_logs = JSON.parse(localStorage.getItem("activity-box")) || [];;
 
+// filters
 filters.forEach((btn) => {
     btn.addEventListener("click", () => {
         document.querySelector("span.active").classList.remove("active");
@@ -29,6 +32,78 @@ filters.forEach((btn) => {
         showTodo(btn.id);
     });
 });
+
+//date and task extraction from the input field
+function extractTaskAndDate(inputText) {
+    const dueDate = extractDeadlineFromDateText(inputText);
+    let task = inputText.trim();
+    const byIndex = inputText.toLowerCase().indexOf("by");
+
+    if (byIndex !== -1) {
+        task = inputText.slice(8, byIndex).trim();
+    }
+
+    if (dueDate) {
+        console.log(dueDate);
+        return { task, dueDate };
+    }
+}
+
+function extractDeadlineFromDateText(inputText) {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const tomorrowKeywords = ["tomorrow", "tmrw", "next day", "nextday"];
+    const dateRegex = /(\d{1,2})(st|nd|rd|th)?(\s)?(jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|jun(e)?|jul(y)?|aug(ust)?|sep(t(ember)?)?|oct(ober)?|nov(ember)?|dec(ember)?)(\s)?(\d{4})?/i;
+    const timeRegex = /(\d{1,2})(:(\d{2}))?(\s)?(am|pm)/i;
+
+    let date = null;
+    let matches;
+
+    if (tomorrowKeywords.some((keyword) => inputText.toLowerCase().includes(keyword))) {
+        date = tomorrow;
+    }
+
+
+    if ((matches = inputText.match(dateRegex))) {
+        const day = parseInt(matches[1], 10);
+        const month = getMonthNumberFromMonthName(matches[4]);
+        const year = matches[13] ? parseInt(matches[13], 10) : today.getFullYear();
+        date = new Date(year, month, day);
+    }
+
+    if ((matches = inputText.match(timeRegex))) {
+        let hours = parseInt(matches[1], 10);
+        const minutes = matches[3] ? parseInt(matches[3], 10) : 0;
+
+        if (matches[5].toLowerCase() === "pm" && hours < 12) {
+            hours += 12;
+        } else if (matches[5].toLowerCase() === "am" && hours === 12) {
+            hours = 0;
+        }
+
+        if (date) {
+            date.setHours(hours, minutes);
+        } else {
+            date = new Date();
+            date.setHours(hours, minutes);
+        }
+    }
+
+    if (date) {
+        date.setMinutes(date.getMinutes() + 330);
+    }
+
+    return date ? date.toISOString().slice(0, 16) : "";
+}
+
+function getMonthNumberFromMonthName(monthName) {
+    const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+    return monthNames.indexOf(monthName.toLowerCase().slice(0, 3));
+}
+
+// creating task object
 
 function createTaskObject(
     name,
@@ -38,7 +113,8 @@ function createTaskObject(
     category,
     tags = [],
     subtasks = [],
-    action = "created"
+    action = "created",
+    isImportant = false
 ) {
     return {
         name: name,
@@ -49,15 +125,24 @@ function createTaskObject(
         tags: tags,
         subtasks: subtasks,
         action: action,
+        isImportant: isImportant,
     };
 }
 
+// add button
 addTask.addEventListener("click", () => {
     let userTask = taskInput.value.trim();
     let deadline = deadlineInput.value;
     let priority = prioritySelect.value;
     let category = categorySelect.value.trim();
     let tags = tagInput.value.split(",").map(tag => tag.trim());
+    let isImportant = ImpCheckbox.checked;
+
+    if (dateTaskInput.value) {
+        const { task, dueDate } = extractTaskAndDate(dateTaskInput.value);
+        userTask = task;
+        deadline = dueDate;
+    }
 
     if (userTask) {
         if (!isEditTask) {
@@ -68,7 +153,10 @@ addTask.addEventListener("click", () => {
                 deadline,
                 priority,
                 category,
-                tags
+                tags,
+                [],
+                "created",
+                isImportant
             );
             todos.push(taskInfo);
             addToActivityLog(userTask, "created");
@@ -80,12 +168,14 @@ addTask.addEventListener("click", () => {
             todos[editId].priority = priority;
             todos[editId].category = category;
             todos[editId].tags = tags;
+            todos[editId].isImportant = isImportant;
         }
         taskInput.value = "";
         deadlineInput.value = "";
         prioritySelect.value = "low";
         categorySelect.value = "Home";
         tagInput.value = "";
+        ImpCheckbox.checked = false;
 
         localStorage.setItem("todo-list", JSON.stringify(todos));
         showTodo(document.querySelector("span.active").id);
@@ -104,7 +194,7 @@ function getCurrentDateTime() {
     return date.toLocaleDateString(undefined, options);
 }
 
-
+// activity log
 function addToActivityLog(task, action) {
     const activity = `${getCurrentDateTime()} - ${action} task "${task}"`;
     activity_logs.push(activity);
@@ -134,6 +224,7 @@ function showActivityLog() {
     taskBox.innerHTML = logHtml;
 }
 
+// Show to-do function
 function showTodo(filter) {
     let liTag = "";
     if (todos) {
@@ -160,6 +251,7 @@ function showTodo(filter) {
 
 
             <button class="addSubtaskBtn" onclick="showAddSubtaskInput(${id})">Add Subtask</button>`;
+
 
                 if (todo.subtasks && todo.subtasks.length > 0) {
                     liTag += `<ul class="subtasks">`;
@@ -199,6 +291,7 @@ function showTodo(filter) {
         });
     }
     taskBox.innerHTML = liTag || `<span>You don't have any task here</span>`;
+
     let checkTask = taskBox.querySelectorAll(".task");
     !checkTask.length
         ? clearAll.classList.remove("active")
@@ -265,6 +358,7 @@ function showAddSubtaskInput(taskId) {
             .value.trim();
         if (subtaskName) {
             addSubtaskToMainTask(taskId, subtaskName);
+            makeSubtasksDraggable(taskId);
             subtaskInputContainer.style.display = "none";
         }
     };
@@ -375,6 +469,7 @@ function formatDate(dateString) {
     return date.toLocaleDateString(undefined, options);
 }
 
+// checking if there is no remainder for today's task
 function checkReminders() {
     const today = new Date().toISOString().slice(0, 10);
     const reminders = todos.filter((todo) => {
@@ -389,6 +484,7 @@ function checkReminders() {
     }
 }
 
+// backlogs
 expired.addEventListener("click", () => {
     const filteredTodos = todos.filter((todo) => {
         let deadline = new Date(todo.deadline);
@@ -399,6 +495,7 @@ expired.addEventListener("click", () => {
     View_Todo_list(filteredTodos);
 });
 
+// sorting
 sortingDeadlineBtn.addEventListener("click", () => {
     showTodoBySorting("deadline");
 });
@@ -435,6 +532,9 @@ function showTodoBySorting(sortingType) {
 
     View_Todo_list(sortedTodos);
 }
+
+
+// filtering
 
 const filter_date_Btn = document.querySelector(".filter-date-btn");
 const filter_category_btn = document.querySelector(".filter-category-btn");
@@ -478,6 +578,7 @@ filter_date_Btn.addEventListener("click", () => {
     }
 });
 
+// show by expiry date
 function showTodoByDueDate(startDate, endDate) {
     const filteredTodos = todos.filter((todo) => {
         const dueDate = new Date(todo.deadline);
@@ -550,6 +651,7 @@ function View_Todo_list(filteredTodos) {
     taskBox.innerHTML = liTag;
 }
 
+// drag and drop
 function makeDraggable(element) {
     element.draggable = true;
 
@@ -570,7 +672,6 @@ function swapTasks(sourceIndex, targetIndex) {
     const sourceTask = tasks[sourceIndex];
     const targetTask = tasks[targetIndex];
 
-    // Swap tasks in the DOM
     tasksContainer.insertBefore(sourceTask, targetTask);
 
     const taskId = parseInt(sourceTask.dataset.taskId, 10);
@@ -594,7 +695,7 @@ function swapSubtasks(taskId, sourceIndex, targetIndex) {
     const sourceSubtask = subtasks[sourceIndex];
     const targetSubtask = subtasks[targetIndex];
 
-    // Swap subtasks in the DOM
+
     subtasksList.insertBefore(sourceSubtask, targetSubtask);
 
     const sourceTask = todos.find((task) => task.id === taskId);
@@ -616,7 +717,7 @@ function findIndexFromTaskElement(element) {
 
 function findIndexFromSubtaskElement(element) {
     const subtasksList = element.parentElement;
-    const taskElement = subtasksList.parentElement; // Traverse one level up to get the task element
+    const taskElement = subtasksList.parentElement;
     const tasksContainer = document.getElementById("task-box");
     const tasks = tasksContainer.querySelectorAll(".task");
     return Array.from(tasks).indexOf(taskElement);
@@ -648,8 +749,34 @@ function handleDragOver(e) {
 
 document.addEventListener("dragover", handleDragOver);
 
-// Add the rest of your JavaScript code here
-
-// Call the function to make existing tasks draggable
 const tasks = document.querySelectorAll(".task");
 tasks.forEach(makeDraggable);
+
+function makeSubtasksDraggable(taskId) {
+    const subtasks = document.querySelectorAll(`.task[data-task-id="${taskId}"] .subtask`);
+    subtasks.forEach((subtask) => {
+        makeDraggable(subtask);
+    });
+}
+
+// gives alert before 1 hour for every Imp task
+setInterval(checkDeadlines, 60000);
+
+function getTime() {
+    return new Date();
+  }
+
+function checkDeadlines() {
+    const now = getTime();
+    todos.forEach((todo) => {
+      if (todo.isImportant && todo.deadline) {
+        const deadlineDate = new Date(todo.deadline);
+        const timeDiff = deadlineDate.getTime() - now.getTime();
+        const oneHourInMillis = 60 * 60 * 1000;
+
+        if (timeDiff > 0 && timeDiff <= oneHourInMillis) {
+          alert(`Task "${todo.name}" is due within 1 hour!`);
+        }
+      }
+    });
+  }
