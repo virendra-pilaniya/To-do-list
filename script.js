@@ -42,11 +42,7 @@ function extractTaskAndDate(inputText) {
     }
 
     if (dueDate) {
-        const timezoneOffset = new Date().getTimezoneOffset() * 60000; // Offset in milliseconds
-        const adjustedDeadline = new Date(new Date(dueDate).getTime() - timezoneOffset)
-            .toISOString()
-            .slice(0, 16);
-
+        console.log(dueDate);
         return { task, dueDate };
     }
 }
@@ -93,6 +89,10 @@ function extractDeadlineFromDateText(inputText) {
             date = new Date();
             date.setHours(hours, minutes);
         }
+    }
+
+    if (date) {
+        date.setMinutes(date.getMinutes() + 330);
     }
 
     return date ? date.toISOString().slice(0, 16) : "";
@@ -649,7 +649,6 @@ function swapTasks(sourceIndex, targetIndex) {
     const sourceTask = tasks[sourceIndex];
     const targetTask = tasks[targetIndex];
 
-    // Swap tasks in the DOM
     tasksContainer.insertBefore(sourceTask, targetTask);
 
     const taskId = parseInt(sourceTask.dataset.taskId, 10);
@@ -673,7 +672,7 @@ function swapSubtasks(taskId, sourceIndex, targetIndex) {
     const sourceSubtask = subtasks[sourceIndex];
     const targetSubtask = subtasks[targetIndex];
 
-    // Swap subtasks in the DOM
+
     subtasksList.insertBefore(sourceSubtask, targetSubtask);
 
     const sourceTask = todos.find((task) => task.id === taskId);
@@ -695,7 +694,7 @@ function findIndexFromTaskElement(element) {
 
 function findIndexFromSubtaskElement(element) {
     const subtasksList = element.parentElement;
-    const taskElement = subtasksList.parentElement; // Traverse one level up to get the task element
+    const taskElement = subtasksList.parentElement;
     const tasksContainer = document.getElementById("task-box");
     const tasks = tasksContainer.querySelectorAll(".task");
     return Array.from(tasks).indexOf(taskElement);
@@ -727,8 +726,26 @@ function handleDragOver(e) {
 
 document.addEventListener("dragover", handleDragOver);
 
-// Add the rest of your JavaScript code here
-
-// Call the function to make existing tasks draggable
 const tasks = document.querySelectorAll(".task");
 tasks.forEach(makeDraggable);
+
+setInterval(checkDeadlines, 60000);
+
+function getTime() {
+    return new Date();
+  }
+
+function checkDeadlines() {
+    const now = getTime();
+    todos.forEach((todo) => {
+      if (todo.deadline) {
+        const deadlineDate = new Date(todo.deadline);
+        const timeDiff = deadlineDate.getTime() - now.getTime();
+        const oneHourInMillis = 60 * 60 * 1000;
+
+        if (timeDiff > 0 && timeDiff <= oneHourInMillis) {
+          alert(`Task "${todo.name}" is due within 1 hour!`);
+        }
+      }
+    });
+  }
