@@ -3,6 +3,7 @@ const taskInput = document.querySelector(".task-input input"),
     filters = document.querySelectorAll(".filters span"),
     clearAll = document.querySelector(".clear-btn"),
     deadlineInput = document.querySelector(".task-input input[type='datetime-local']"),
+    dateTaskInput = document.querySelector(".task-input .deadline_text_input"),
     prioritySelect = document.querySelector(".task-input .priority-select"),
     categorySelect = document.querySelector(".task-input .category-select"),
     categorySelectN = document.querySelector(".controls .category-select-1"),
@@ -29,6 +30,78 @@ filters.forEach((btn) => {
         showTodo(btn.id);
     });
 });
+
+
+function extractTaskAndDate(inputText) {
+    const dueDate = extractDeadlineFromDateText(inputText);
+    let task = inputText.trim();
+    const byIndex = inputText.toLowerCase().indexOf("by");
+
+    if (byIndex !== -1) {
+        task = inputText.slice(8, byIndex).trim();
+    }
+
+    if (dueDate) {
+        const timezoneOffset = new Date().getTimezoneOffset() * 60000; // Offset in milliseconds
+        const adjustedDeadline = new Date(new Date(dueDate).getTime() - timezoneOffset)
+            .toISOString()
+            .slice(0, 16);
+
+        return { task, dueDate };
+    }
+}
+
+function extractDeadlineFromDateText(inputText) {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const tomorrowKeywords = ["tomorrow", "tmrw", "next day", "nextday"];
+    const dateRegex = /(\d{1,2})(st|nd|rd|th)?(\s)?(jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|jun(e)?|jul(y)?|aug(ust)?|sep(t(ember)?)?|oct(ober)?|nov(ember)?|dec(ember)?)(\s)?(\d{4})?/i;
+    const timeRegex = /(\d{1,2})(:(\d{2}))?(\s)?(am|pm)/i;
+
+    let date = null;
+    let matches;
+
+    // Check if input text contains any of the tomorrow keywords
+    if (tomorrowKeywords.some((keyword) => inputText.toLowerCase().includes(keyword))) {
+        date = tomorrow;
+    }
+
+    // Check if input text contains date information using regex
+    if ((matches = inputText.match(dateRegex))) {
+        const day = parseInt(matches[1], 10);
+        const month = getMonthNumberFromMonthName(matches[4]);
+        const year = matches[13] ? parseInt(matches[13], 10) : today.getFullYear();
+        date = new Date(year, month, day);
+    }
+
+    // Check if input text contains time information using regex
+    if ((matches = inputText.match(timeRegex))) {
+        let hours = parseInt(matches[1], 10);
+        const minutes = matches[3] ? parseInt(matches[3], 10) : 0;
+
+        if (matches[5].toLowerCase() === "pm" && hours < 12) {
+            hours += 12;
+        } else if (matches[5].toLowerCase() === "am" && hours === 12) {
+            hours = 0;
+        }
+
+        if (date) {
+            date.setHours(hours, minutes);
+        } else {
+            date = new Date();
+            date.setHours(hours, minutes);
+        }
+    }
+
+    return date ? date.toISOString().slice(0, 16) : "";
+}
+
+function getMonthNumberFromMonthName(monthName) {
+    const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+    return monthNames.indexOf(monthName.toLowerCase().slice(0, 3));
+}
 
 function createTaskObject(
     name,
@@ -58,6 +131,12 @@ addTask.addEventListener("click", () => {
     let priority = prioritySelect.value;
     let category = categorySelect.value.trim();
     let tags = tagInput.value.split(",").map(tag => tag.trim());
+
+    if (dateTaskInput.value) {
+        const { task, dueDate } = extractTaskAndDate(dateTaskInput.value);
+        userTask = task;
+        deadline = dueDate;
+    }
 
     if (userTask) {
         if (!isEditTask) {
