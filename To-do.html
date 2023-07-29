@@ -74,16 +74,17 @@
                 <span id="pending">Pending</span>
                 <span id="completed">Completed</span>
             </div>
+            <div class="subtask-input-container" style="display: none;">
+                <input type="text" placeholder="Add a new subtask" class="subtask-container">
+                <button class="addSubtaskBtn" onclick="addSubtask()">Add</button>
+            </div>
         </div>
 
         <ul class="task-box" id="task-box"></ul>
         <ul class="activity-box"></ul>
 
     </div>
-    <div class="subtask-input-container" style="display: none;">
-        <input type="text" placeholder="Add a new subtask" class="subtask-container">
-        <button class="addSubtaskBtn" onclick="addSubtask()">Add</button>
-    </div>
+
     <script src="script.js"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 </body>

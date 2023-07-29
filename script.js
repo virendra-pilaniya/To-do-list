@@ -243,6 +243,7 @@ function showTodo(filter) {
 
             <button class="addSubtaskBtn" onclick="showAddSubtaskInput(${id})">Add Subtask</button>`;
 
+
                 if (todo.subtasks && todo.subtasks.length > 0) {
                     liTag += `<ul class="subtasks">`;
 
@@ -281,6 +282,7 @@ function showTodo(filter) {
         });
     }
     taskBox.innerHTML = liTag || `<span>You don't have any task here</span>`;
+
     let checkTask = taskBox.querySelectorAll(".task");
     !checkTask.length
         ? clearAll.classList.remove("active")
@@ -347,6 +349,7 @@ function showAddSubtaskInput(taskId) {
             .value.trim();
         if (subtaskName) {
             addSubtaskToMainTask(taskId, subtaskName);
+            makeSubtasksDraggable(taskId);
             subtaskInputContainer.style.display = "none";
         }
     };
@@ -731,6 +734,14 @@ document.addEventListener("dragover", handleDragOver);
 
 const tasks = document.querySelectorAll(".task");
 tasks.forEach(makeDraggable);
+
+function makeSubtasksDraggable(taskId) {
+    const subtasks = document.querySelectorAll(`.task[data-task-id="${taskId}"] .subtask`);
+    subtasks.forEach((subtask) => {
+        makeDraggable(subtask);
+    });
+}
+
 
 setInterval(checkDeadlines, 60000);
 

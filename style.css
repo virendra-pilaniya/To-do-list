@@ -458,6 +458,9 @@ li {
     font-family: Verdana, Geneva, Tahoma, sans-serif
 }
 
+.subtask-input-container {
+    margin-right: 1100px;
+}
 /* .task-box.overflow{
   overflow-y: auto;
   max-height: 300px;
