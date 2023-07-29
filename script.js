@@ -2,9 +2,7 @@ const taskInput = document.querySelector(".task-input input"),
     addTask = document.querySelector(".addTasking"),
     filters = document.querySelectorAll(".filters span"),
     clearAll = document.querySelector(".clear-btn"),
-    deadlineInput = document.querySelector(
-        ".task-input input[type='datetime-local']"
-    ),
+    deadlineInput = document.querySelector(".task-input input[type='datetime-local']"),
     prioritySelect = document.querySelector(".task-input .priority-select"),
     categorySelect = document.querySelector(".task-input .category-select"),
     categorySelectN = document.querySelector(".controls .category-select-1"),
@@ -19,6 +17,7 @@ const taskInput = document.querySelector(".task-input input"),
 let editId,
     isEditTask = false,
     subeditId,
+    currentTaskId,
     issubEditTask = false,
     todos = JSON.parse(localStorage.getItem("todo-list"));
 activity_logs = JSON.parse(localStorage.getItem("activity-box")) || [];;
@@ -150,12 +149,16 @@ function showTodo(filter) {
                 liTag += `<li class="task">
             <label for="${id}">
               <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
-              <p class="${completed}">${todo.name}</p>
-              <p class="deadline"> | Deadline: ${formatDate(todo.deadline)}</p>
-              <p class="priority"> | Priority: ${todo.priority}</p>
-              <p class="Category"> | Category: ${todo.category}</p>
-              <p class="tags"> | Tags: ${tagsFormatted}</p>
+              <div class="task-details">
+              <p class="${completed} task-info">Task: ${todo.name}</p>
+              <p class="deadline task-info">Deadline: ${formatDate(todo.deadline)}</p>
+              <p class="priority task-info">Priority: ${todo.priority}</p>
+              <p class="Category task-info">Category: ${todo.category}</p>
+              <p class="tags task-info">Tags: ${tagsFormatted}</p>
+              </div>
             </label>
+
+
             <button class="addSubtaskBtn" onclick="showAddSubtaskInput(${id})">Add Subtask</button>`;
 
                 if (todo.subtasks && todo.subtasks.length > 0) {
@@ -496,13 +499,13 @@ function View_Todo_list(filteredTodos) {
             liTag += `<li class="task">
                   <label for="${id}">
                       <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
-                      <p class="${completed}">${todo.name}</p>
-                      <p class="deadline"> | Deadline: ${formatDate(
-                todo.deadline
-            )}</p>
-                      <p class="priority"> | Priority: ${todo.priority}</p>
-                      <p class="priority"> | Category: ${todo.category}</p>
-                      <p class="tags"> | Tags: ${tagsFormatted}</p>
+                      <div class="task-details">
+              <p class="${completed} task-info">Task: ${todo.name}</p>
+              <p class="deadline task-info">Deadline: ${formatDate(todo.deadline)}</p>
+              <p class="priority task-info">Priority: ${todo.priority}</p>
+              <p class="Category task-info">Category: ${todo.category}</p>
+              <p class="tags task-info">Tags: ${tagsFormatted}</p>
+              </div>
                       <button class="addSubtaskBtn" onclick="addSubtask(${id})">add subtask</button>
                   </label>
                   <div class="settings">

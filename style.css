@@ -15,7 +15,7 @@ h1 {
 }
 
 .subtask {
-    margin-right: 100px;
+    margin-right: 280px;
 }
 
 .task-box {
@@ -237,6 +237,7 @@ li {
 .controls {
     padding: 18px 25px;
     border-bottom: 1px solid #ccc;
+    background-color:darkorchid
 }
 
 .filters span {
@@ -427,6 +428,7 @@ li {
 }
 
 .addSubtaskBtn {
+
     border: none;
     border-radius: 4px;
     background-color: purple;
@@ -435,6 +437,7 @@ li {
     text-align: center;
     width: 90px;
     height: 35px;
+    margin-left: -300px;
     font-family: Verdana, Geneva, Tahoma, sans-serif
 }
 
@@ -461,6 +464,7 @@ li {
     margin-bottom: 18px;
     padding-bottom: 16px;
     align-items: flex-start;
+    color: black;
     border-bottom: 1px solid #ccc;
 }
 
@@ -499,3 +503,12 @@ li {
   .subtasks.drop-zone {
     background-color: #f1f1f1;
   }
+
+  .task-details {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.task-info {
+    flex: 1 0 100%;
+}

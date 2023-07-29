@@ -29,28 +29,36 @@
 
         </div>
         <div class="controls">
-            <button class="show-activity-btn">Show Activity</button>
+            <label for="priority-select" class="p_s">Sorting:</label>
             <button id="sorting-deadline">Sort by Deadline</button>
             <button id="sorting-priority">Sort by Priority</button>
             <button id="sorting-category">Sort by Category</button>
-            <button class="expired">Expired</button>
-            <input type="search" placeholder="Search...." id="search">
+
+            <button class="show-activity-btn">Show Activity</button>
+            <button class="expired">Expired Tasks</button>
+            <label for="priority-select" class="p_s">Search:</label>
+            <input type="search" placeholder="task,etc...." id="search">
+            <label for="priority-select" class="p_s">Clear All:</label>
             <button class="clear-btn">Clear All</button>
 
         </div>
         <div class="controls">
+            <label for="priority-select" class="p_s">Filtering:</label>
+            <input type="text" placeholder="Category" class="category-select-1">
+            <button class="filter-category-btn">Filter by Category</button>
             <input type="date" id="startDate" placeholder="Start Date" class="xdate">
             <input type="date" id="endDate" placeholder="End Date" class="xdate">
             <button class="filter-date-btn">Filter by Date</button>
-            <!-- <label for="category-select-1" class="c_s">Category:</label> -->
-            <button class="filter-category-btn">Filter by Category</button>
-            <input type="text" placeholder="Category" class="category-select-1">
-            <button class="filter-by-priority-btn">filter by Priority</button>
+
             <select class="priority-filter" id="priority-filter">
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
             </select>
+            <button class="filter-by-priority-btn">filter by Priority</button>
+            <!-- <label for="category-select-1" class="c_s">Category:</label> -->
+
+
 
         </div>
         <div class="controls">
