@@ -47,7 +47,7 @@ body {
 }
 
 .wrapper {
-    max-width: 1490px;
+    max-width: 1500px;
     height: 100%;
     padding: 28px 0 30px;
     margin: 70px auto;
@@ -68,7 +68,7 @@ body {
     background-color: #4caf50;
     color: white;
     cursor: pointer;
-    width: 90px;
+    width: 71px;
     height: 30px;
     font-weight: bold;
     text-align: center;
@@ -82,7 +82,7 @@ body {
 
 .text_input {
     height: 70%;
-    width: 17%;
+    width: 16%;
     outline: none;
     font-size: 18px;
     border-radius: 5px;
@@ -117,7 +117,7 @@ body {
 
 .deadline_input {
     height: 70%;
-    width: 6.83%;
+    width: 17%;
     outline: none;
     text-align: left;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -129,7 +129,7 @@ body {
 
 .deadline_text_input {
     height: 70%;
-    width: 17.5%;
+    width: 16.5%;
     outline: none;
     text-align: left;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -160,7 +160,7 @@ body {
 }
 
 .category-select {
-    width: 175px;
+    width: 160px;
     height: 30px;
     outline: none;
     text-align: left;
@@ -185,7 +185,7 @@ body {
 
 
 .tag-select {
-    width: 175px;
+    width: 108px;
     height: 30px;
     outline: none;
     text-align: left;
@@ -210,6 +210,7 @@ body {
 
 .priority-select {
     outline: none;
+    width: 128px;
     height: 30px;
     text-align: left;
     font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
