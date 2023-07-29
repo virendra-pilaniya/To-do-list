@@ -1,5 +1,7 @@
 # To-do-list
 
+ALL FEATURES COMPLETED. DRAG AND DROP IS TAKING SOME TIME TO LOAD, SO REFRESH ONCE. 
+
 Add Todo: Users can add new tasks to the todo list.
 
 Edit Todo: Users can edit the details of existing tasks.
@@ -42,3 +44,7 @@ Partial Search: Users can search for tasks using partial keywords.
 Tags: Users can search for tasks based on specific tags.
 
 Reminders (Cron): Users can set reminders for important tasks.
+
+Reminders for important tasks before 1 hour.
+
+Date Auto Complete: Users will get auto-complete while creating a new todo for due-date

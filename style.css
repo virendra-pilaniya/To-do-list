@@ -27,7 +27,8 @@ h1 {
     height: 30px;
     width: 250px;
     outline: none;
-    margin-left: 660px;
+    margin-left: 530px;
+    margin-bottom: 30px;
     font-size: 18px;
     border-radius: 5px;
     padding: 0 20px 0 53px;
@@ -488,6 +489,9 @@ li {
     border-bottom: 1px solid #ccc;
 }
 
+.x {
+    display: flex;
+}
 
 .task-box .task:last-child {
     margin-bottom: 0;
