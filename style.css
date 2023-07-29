@@ -200,7 +200,7 @@ body {
     outline: none;
     height: 30px;
     text-align: left;
-    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif; 
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
     font-size: 18px;
     border-radius: 5px;
     padding: 0px 20px 0px 53px;
@@ -443,7 +443,7 @@ li {
   max-height: 300px;
 } */
 
-/* 
+/*
 .task-box::-webkit-scrollbar{
   width: 5px;
 }
@@ -487,3 +487,15 @@ li {
     margin-left: 12px;
     word-wrap: break-word;
 }
+
+.task.dragged {
+    opacity: 0.5;
+  }
+
+  .subtask.dragged {
+    opacity: 0.7;
+  }
+
+  .subtasks.drop-zone {
+    background-color: #f1f1f1;
+  }

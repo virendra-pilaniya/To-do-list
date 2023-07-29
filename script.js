@@ -21,7 +21,7 @@ let editId,
     subeditId,
     issubEditTask = false,
     todos = JSON.parse(localStorage.getItem("todo-list"));
-    activity_logs = JSON.parse(localStorage.getItem("activity-box")) || [];;
+activity_logs = JSON.parse(localStorage.getItem("activity-box")) || [];;
 
 filters.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -345,7 +345,7 @@ searchInput.addEventListener("input", function (e) {
     const filteredTodos = todos.filter((todo) => {
         return ((todo.name.toLowerCase().indexOf(searchStr) > -1) ||
             (containsSubtask(todo.subtasks, searchStr)) || (Array.isArray(todo.tags) &&
-            todo.tags.some((tag) => tag.toLowerCase().indexOf(searchStr) > -1)));
+                todo.tags.some((tag) => tag.toLowerCase().indexOf(searchStr) > -1)));
     });
 
     View_Todo_list(filteredTodos);
@@ -490,9 +490,9 @@ function View_Todo_list(filteredTodos) {
         filteredTodos.forEach((todo, id) => {
             let completed = todo.status == "completed" ? "checked" : "";
             let tagsFormatted = "";
-                if (Array.isArray(todo.tags)) {
-                    tagsFormatted = todo.tags.map(tag => `<span class="tag">${tag}</span>`).join(" ");
-                }
+            if (Array.isArray(todo.tags)) {
+                tagsFormatted = todo.tags.map(tag => `<span class="tag">${tag}</span>`).join(" ");
+            }
             liTag += `<li class="task">
                   <label for="${id}">
                       <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
@@ -507,7 +507,7 @@ function View_Todo_list(filteredTodos) {
                   </label>
                   <div class="settings">
                       <ul class="task-menu">
-                          
+
                           <button class="inside_btn" onclick='editTask(${id}, "${todo.name
                 }")'><i class="uil uil-pen"></i>Edit</button>
                           <button class="inside_btn2" onclick='deleteTask(${id})'><i class="uil uil-trash"></i>Delete</button>
@@ -546,3 +546,107 @@ function View_Todo_list(filteredTodos) {
 
     taskBox.innerHTML = liTag;
 }
+
+function makeDraggable(element) {
+    element.draggable = true;
+
+    element.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/plain", e.target.id);
+        e.target.classList.add("dragging");
+    });
+
+    element.addEventListener("dragend", (e) => {
+        e.target.classList.remove("dragging");
+    });
+}
+
+function swapTasks(sourceIndex, targetIndex) {
+    const tasksContainer = document.getElementById("task-box");
+    const tasks = tasksContainer.querySelectorAll(".task");
+
+    const sourceTask = tasks[sourceIndex];
+    const targetTask = tasks[targetIndex];
+
+    // Swap tasks in the DOM
+    tasksContainer.insertBefore(sourceTask, targetTask);
+
+    const taskId = parseInt(sourceTask.dataset.taskId, 10);
+    const targetTaskId = parseInt(targetTask.dataset.taskId, 10);
+
+    const tempTask = todos[sourceIndex];
+    todos[sourceIndex] = todos[targetIndex];
+    todos[targetIndex] = tempTask;
+
+    todos[sourceIndex].action = "moved";
+    todos[targetIndex].action = "moved";
+
+    localStorage.setItem("todo-list", JSON.stringify(todos));
+}
+
+function swapSubtasks(taskId, sourceIndex, targetIndex) {
+    const taskContainer = document.querySelector(`.task[data-task-id="${taskId}"]`);
+    const subtasksList = taskContainer.querySelector(".subtasks");
+    const subtasks = subtasksList.querySelectorAll(".subtask");
+
+    const sourceSubtask = subtasks[sourceIndex];
+    const targetSubtask = subtasks[targetIndex];
+
+    // Swap subtasks in the DOM
+    subtasksList.insertBefore(sourceSubtask, targetSubtask);
+
+    const sourceTask = todos.find((task) => task.id === taskId);
+    const tempSubtask = sourceTask.subtasks[sourceIndex];
+    sourceTask.subtasks[sourceIndex] = sourceTask.subtasks[targetIndex];
+    sourceTask.subtasks[targetIndex] = tempSubtask;
+
+    sourceTask.subtasks[sourceIndex].action = "moved";
+    sourceTask.subtasks[targetIndex].action = "moved";
+
+    localStorage.setItem("todo-list", JSON.stringify(todos));
+}
+
+function findIndexFromTaskElement(element) {
+    const tasksContainer = document.getElementById("task-box");
+    const tasks = tasksContainer.querySelectorAll(".task");
+    return Array.from(tasks).indexOf(element);
+}
+
+function findIndexFromSubtaskElement(element) {
+    const subtasksList = element.parentElement;
+    const taskElement = subtasksList.parentElement; // Traverse one level up to get the task element
+    const tasksContainer = document.getElementById("task-box");
+    const tasks = tasksContainer.querySelectorAll(".task");
+    return Array.from(tasks).indexOf(taskElement);
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    const draggedTask = document.querySelector(".dragging");
+    const overTask = e.target.closest(".task");
+
+    if (overTask && draggedTask && draggedTask !== overTask) {
+        const fromIndex = findIndexFromTaskElement(draggedTask);
+        const toIndex = findIndexFromTaskElement(overTask);
+
+        swapTasks(fromIndex, toIndex);
+    }
+
+    const draggedSubtask = document.querySelector(".subtask.dragging");
+    const overSubtask = e.target.closest(".subtask");
+
+    if (overSubtask && draggedSubtask && draggedSubtask !== overSubtask) {
+        const taskId = parseInt(overSubtask.parentElement.dataset.taskId, 10);
+        const fromIndex = findIndexFromSubtaskElement(draggedSubtask);
+        const toIndex = findIndexFromSubtaskElement(overSubtask);
+
+        swapSubtasks(taskId, fromIndex, toIndex);
+    }
+}
+
+document.addEventListener("dragover", handleDragOver);
+
+// Add the rest of your JavaScript code here
+
+// Call the function to make existing tasks draggable
+const tasks = document.querySelectorAll(".task");
+tasks.forEach(makeDraggable);
