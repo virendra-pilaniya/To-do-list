@@ -24,6 +24,7 @@ let editId,
     todos = JSON.parse(localStorage.getItem("todo-list"));
 activity_logs = JSON.parse(localStorage.getItem("activity-box")) || [];;
 
+// filters
 filters.forEach((btn) => {
     btn.addEventListener("click", () => {
         document.querySelector("span.active").classList.remove("active");
@@ -32,7 +33,7 @@ filters.forEach((btn) => {
     });
 });
 
-
+//date and task extraction from the input field
 function extractTaskAndDate(inputText) {
     const dueDate = extractDeadlineFromDateText(inputText);
     let task = inputText.trim();
@@ -60,12 +61,11 @@ function extractDeadlineFromDateText(inputText) {
     let date = null;
     let matches;
 
-    // Check if input text contains any of the tomorrow keywords
     if (tomorrowKeywords.some((keyword) => inputText.toLowerCase().includes(keyword))) {
         date = tomorrow;
     }
 
-    // Check if input text contains date information using regex
+
     if ((matches = inputText.match(dateRegex))) {
         const day = parseInt(matches[1], 10);
         const month = getMonthNumberFromMonthName(matches[4]);
@@ -73,7 +73,6 @@ function extractDeadlineFromDateText(inputText) {
         date = new Date(year, month, day);
     }
 
-    // Check if input text contains time information using regex
     if ((matches = inputText.match(timeRegex))) {
         let hours = parseInt(matches[1], 10);
         const minutes = matches[3] ? parseInt(matches[3], 10) : 0;
@@ -104,6 +103,8 @@ function getMonthNumberFromMonthName(monthName) {
     return monthNames.indexOf(monthName.toLowerCase().slice(0, 3));
 }
 
+// creating task object
+
 function createTaskObject(
     name,
     status,
@@ -128,6 +129,7 @@ function createTaskObject(
     };
 }
 
+// add button
 addTask.addEventListener("click", () => {
     let userTask = taskInput.value.trim();
     let deadline = deadlineInput.value;
@@ -186,7 +188,7 @@ function getCurrentDateTime() {
     return date.toLocaleDateString(undefined, options);
 }
 
-
+// activity log
 function addToActivityLog(task, action) {
     const activity = `${getCurrentDateTime()} - ${action} task "${task}"`;
     activity_logs.push(activity);
@@ -216,6 +218,7 @@ function showActivityLog() {
     taskBox.innerHTML = logHtml;
 }
 
+// Show to-do function
 function showTodo(filter) {
     let liTag = "";
     if (todos) {
@@ -460,6 +463,7 @@ function formatDate(dateString) {
     return date.toLocaleDateString(undefined, options);
 }
 
+// checking if there is no remainder for today's task
 function checkReminders() {
     const today = new Date().toISOString().slice(0, 10);
     const reminders = todos.filter((todo) => {
@@ -474,6 +478,7 @@ function checkReminders() {
     }
 }
 
+// backlogs
 expired.addEventListener("click", () => {
     const filteredTodos = todos.filter((todo) => {
         let deadline = new Date(todo.deadline);
@@ -484,6 +489,7 @@ expired.addEventListener("click", () => {
     View_Todo_list(filteredTodos);
 });
 
+// sorting
 sortingDeadlineBtn.addEventListener("click", () => {
     showTodoBySorting("deadline");
 });
@@ -520,6 +526,9 @@ function showTodoBySorting(sortingType) {
 
     View_Todo_list(sortedTodos);
 }
+
+
+// filtering
 
 const filter_date_Btn = document.querySelector(".filter-date-btn");
 const filter_category_btn = document.querySelector(".filter-category-btn");
@@ -563,6 +572,7 @@ filter_date_Btn.addEventListener("click", () => {
     }
 });
 
+// show by expiry date
 function showTodoByDueDate(startDate, endDate) {
     const filteredTodos = todos.filter((todo) => {
         const dueDate = new Date(todo.deadline);
@@ -635,6 +645,7 @@ function View_Todo_list(filteredTodos) {
     taskBox.innerHTML = liTag;
 }
 
+// drag and drop
 function makeDraggable(element) {
     element.draggable = true;
 
@@ -742,7 +753,7 @@ function makeSubtasksDraggable(taskId) {
     });
 }
 
-
+// gives alert before 1 hour for every Imp task
 setInterval(checkDeadlines, 60000);
 
 function getTime() {
