@@ -80,6 +80,10 @@ body {
     transform: translate(17px, -50%);
 }
 
+.task.important {
+    border-left: 4px solid #ff4d4d;
+}
+
 .text_input {
     height: 70%;
     width: 16%;

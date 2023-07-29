@@ -111,7 +111,8 @@ function createTaskObject(
     category,
     tags = [],
     subtasks = [],
-    action = "created"
+    action = "created",
+    isImportant = false
 ) {
     return {
         name: name,
@@ -122,6 +123,7 @@ function createTaskObject(
         tags: tags,
         subtasks: subtasks,
         action: action,
+        isImportant: isImportant,
     };
 }
 
@@ -131,12 +133,7 @@ addTask.addEventListener("click", () => {
     let priority = prioritySelect.value;
     let category = categorySelect.value.trim();
     let tags = tagInput.value.split(",").map(tag => tag.trim());
-
-    if (dateTaskInput.value) {
-        const { task, dueDate } = extractTaskAndDate(dateTaskInput.value);
-        userTask = task;
-        deadline = dueDate;
-    }
+    let isImportant = document.querySelector(".task-input input[type='checkbox']").checked;
 
     if (userTask) {
         if (!isEditTask) {
@@ -147,7 +144,10 @@ addTask.addEventListener("click", () => {
                 deadline,
                 priority,
                 category,
-                tags
+                tags,
+                [],
+                "created",
+                isImportant
             );
             todos.push(taskInfo);
             addToActivityLog(userTask, "created");
@@ -159,6 +159,7 @@ addTask.addEventListener("click", () => {
             todos[editId].priority = priority;
             todos[editId].category = category;
             todos[editId].tags = tags;
+            todos[editId].isImportant = isImportant;
         }
         taskInput.value = "";
         deadlineInput.value = "";
@@ -738,7 +739,7 @@ function getTime() {
 function checkDeadlines() {
     const now = getTime();
     todos.forEach((todo) => {
-      if (todo.deadline) {
+      if (todo.isImportant && todo.deadline) {
         const deadlineDate = new Date(todo.deadline);
         const timeDiff = deadlineDate.getTime() - now.getTime();
         const oneHourInMillis = 60 * 60 * 1000;
