@@ -488,6 +488,9 @@ li {
     border-bottom: 1px solid #ccc;
 }
 
+.x {
+    display: flex;
+}
 
 .task-box .task:last-child {
     margin-bottom: 0;
