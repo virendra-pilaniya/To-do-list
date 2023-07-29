@@ -3,6 +3,7 @@ const taskInput = document.querySelector(".task-input input"),
     filters = document.querySelectorAll(".filters span"),
     clearAll = document.querySelector(".clear-btn"),
     deadlineInput = document.querySelector(".task-input input[type='datetime-local']"),
+    dateTaskInput = document.querySelector(".task-input .deadline_text_input"),
     prioritySelect = document.querySelector(".task-input .priority-select"),
     categorySelect = document.querySelector(".task-input .category-select"),
     categorySelectN = document.querySelector(".controls .category-select-1"),
@@ -12,7 +13,8 @@ const taskInput = document.querySelector(".task-input input"),
     sortingDeadlineBtn = document.getElementById("sorting-deadline"),
     sortingPriorityBtn = document.getElementById("sorting-priority"),
     sortingCategoryBtn = document.getElementById("sorting-category"),
-    showActivityBtn = document.querySelector(".show-activity-btn");
+    showActivityBtn = document.querySelector(".show-activity-btn"),
+    ImpCheckbox = document.querySelector(".task-input input[type='checkbox']");
 
 let editId,
     isEditTask = false,
@@ -30,6 +32,78 @@ filters.forEach((btn) => {
     });
 });
 
+
+function extractTaskAndDate(inputText) {
+    const dueDate = extractDeadlineFromDateText(inputText);
+    let task = inputText.trim();
+    const byIndex = inputText.toLowerCase().indexOf("by");
+
+    if (byIndex !== -1) {
+        task = inputText.slice(8, byIndex).trim();
+    }
+
+    if (dueDate) {
+        console.log(dueDate);
+        return { task, dueDate };
+    }
+}
+
+function extractDeadlineFromDateText(inputText) {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const tomorrowKeywords = ["tomorrow", "tmrw", "next day", "nextday"];
+    const dateRegex = /(\d{1,2})(st|nd|rd|th)?(\s)?(jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|jun(e)?|jul(y)?|aug(ust)?|sep(t(ember)?)?|oct(ober)?|nov(ember)?|dec(ember)?)(\s)?(\d{4})?/i;
+    const timeRegex = /(\d{1,2})(:(\d{2}))?(\s)?(am|pm)/i;
+
+    let date = null;
+    let matches;
+
+    // Check if input text contains any of the tomorrow keywords
+    if (tomorrowKeywords.some((keyword) => inputText.toLowerCase().includes(keyword))) {
+        date = tomorrow;
+    }
+
+    // Check if input text contains date information using regex
+    if ((matches = inputText.match(dateRegex))) {
+        const day = parseInt(matches[1], 10);
+        const month = getMonthNumberFromMonthName(matches[4]);
+        const year = matches[13] ? parseInt(matches[13], 10) : today.getFullYear();
+        date = new Date(year, month, day);
+    }
+
+    // Check if input text contains time information using regex
+    if ((matches = inputText.match(timeRegex))) {
+        let hours = parseInt(matches[1], 10);
+        const minutes = matches[3] ? parseInt(matches[3], 10) : 0;
+
+        if (matches[5].toLowerCase() === "pm" && hours < 12) {
+            hours += 12;
+        } else if (matches[5].toLowerCase() === "am" && hours === 12) {
+            hours = 0;
+        }
+
+        if (date) {
+            date.setHours(hours, minutes);
+        } else {
+            date = new Date();
+            date.setHours(hours, minutes);
+        }
+    }
+
+    if (date) {
+        date.setMinutes(date.getMinutes() + 330);
+    }
+
+    return date ? date.toISOString().slice(0, 16) : "";
+}
+
+function getMonthNumberFromMonthName(monthName) {
+    const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+    return monthNames.indexOf(monthName.toLowerCase().slice(0, 3));
+}
+
 function createTaskObject(
     name,
     status,
@@ -38,7 +112,8 @@ function createTaskObject(
     category,
     tags = [],
     subtasks = [],
-    action = "created"
+    action = "created",
+    isImportant = false
 ) {
     return {
         name: name,
@@ -49,6 +124,7 @@ function createTaskObject(
         tags: tags,
         subtasks: subtasks,
         action: action,
+        isImportant: isImportant,
     };
 }
 
@@ -58,6 +134,7 @@ addTask.addEventListener("click", () => {
     let priority = prioritySelect.value;
     let category = categorySelect.value.trim();
     let tags = tagInput.value.split(",").map(tag => tag.trim());
+    let isImportant = ImpCheckbox.checked;
 
     if (userTask) {
         if (!isEditTask) {
@@ -68,7 +145,10 @@ addTask.addEventListener("click", () => {
                 deadline,
                 priority,
                 category,
-                tags
+                tags,
+                [],
+                "created",
+                isImportant
             );
             todos.push(taskInfo);
             addToActivityLog(userTask, "created");
@@ -80,12 +160,14 @@ addTask.addEventListener("click", () => {
             todos[editId].priority = priority;
             todos[editId].category = category;
             todos[editId].tags = tags;
+            todos[editId].isImportant = isImportant;
         }
         taskInput.value = "";
         deadlineInput.value = "";
         prioritySelect.value = "low";
         categorySelect.value = "Home";
         tagInput.value = "";
+        ImpCheckbox.checked = false;
 
         localStorage.setItem("todo-list", JSON.stringify(todos));
         showTodo(document.querySelector("span.active").id);
@@ -161,6 +243,7 @@ function showTodo(filter) {
 
             <button class="addSubtaskBtn" onclick="showAddSubtaskInput(${id})">Add Subtask</button>`;
 
+
                 if (todo.subtasks && todo.subtasks.length > 0) {
                     liTag += `<ul class="subtasks">`;
 
@@ -199,6 +282,7 @@ function showTodo(filter) {
         });
     }
     taskBox.innerHTML = liTag || `<span>You don't have any task here</span>`;
+
     let checkTask = taskBox.querySelectorAll(".task");
     !checkTask.length
         ? clearAll.classList.remove("active")
@@ -265,6 +349,7 @@ function showAddSubtaskInput(taskId) {
             .value.trim();
         if (subtaskName) {
             addSubtaskToMainTask(taskId, subtaskName);
+            makeSubtasksDraggable(taskId);
             subtaskInputContainer.style.display = "none";
         }
     };
@@ -570,7 +655,6 @@ function swapTasks(sourceIndex, targetIndex) {
     const sourceTask = tasks[sourceIndex];
     const targetTask = tasks[targetIndex];
 
-    // Swap tasks in the DOM
     tasksContainer.insertBefore(sourceTask, targetTask);
 
     const taskId = parseInt(sourceTask.dataset.taskId, 10);
@@ -594,7 +678,7 @@ function swapSubtasks(taskId, sourceIndex, targetIndex) {
     const sourceSubtask = subtasks[sourceIndex];
     const targetSubtask = subtasks[targetIndex];
 
-    // Swap subtasks in the DOM
+
     subtasksList.insertBefore(sourceSubtask, targetSubtask);
 
     const sourceTask = todos.find((task) => task.id === taskId);
@@ -616,7 +700,7 @@ function findIndexFromTaskElement(element) {
 
 function findIndexFromSubtaskElement(element) {
     const subtasksList = element.parentElement;
-    const taskElement = subtasksList.parentElement; // Traverse one level up to get the task element
+    const taskElement = subtasksList.parentElement;
     const tasksContainer = document.getElementById("task-box");
     const tasks = tasksContainer.querySelectorAll(".task");
     return Array.from(tasks).indexOf(taskElement);
@@ -648,8 +732,34 @@ function handleDragOver(e) {
 
 document.addEventListener("dragover", handleDragOver);
 
-// Add the rest of your JavaScript code here
-
-// Call the function to make existing tasks draggable
 const tasks = document.querySelectorAll(".task");
 tasks.forEach(makeDraggable);
+
+function makeSubtasksDraggable(taskId) {
+    const subtasks = document.querySelectorAll(`.task[data-task-id="${taskId}"] .subtask`);
+    subtasks.forEach((subtask) => {
+        makeDraggable(subtask);
+    });
+}
+
+
+setInterval(checkDeadlines, 60000);
+
+function getTime() {
+    return new Date();
+  }
+
+function checkDeadlines() {
+    const now = getTime();
+    todos.forEach((todo) => {
+      if (todo.isImportant && todo.deadline) {
+        const deadlineDate = new Date(todo.deadline);
+        const timeDiff = deadlineDate.getTime() - now.getTime();
+        const oneHourInMillis = 60 * 60 * 1000;
+
+        if (timeDiff > 0 && timeDiff <= oneHourInMillis) {
+          alert(`Task "${todo.name}" is due within 1 hour!`);
+        }
+      }
+    });
+  }

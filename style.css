@@ -47,7 +47,7 @@ body {
 }
 
 .wrapper {
-    max-width: 1400px;
+    max-width: 1500px;
     height: 100%;
     padding: 28px 0 30px;
     margin: 70px auto;
@@ -68,7 +68,7 @@ body {
     background-color: #4caf50;
     color: white;
     cursor: pointer;
-    width: 90px;
+    width: 71px;
     height: 30px;
     font-weight: bold;
     text-align: center;
@@ -80,9 +80,13 @@ body {
     transform: translate(17px, -50%);
 }
 
+.task.important {
+    border-left: 4px solid #ff4d4d;
+}
+
 .text_input {
     height: 70%;
-    width: 22%;
+    width: 16%;
     outline: none;
     font-size: 18px;
     border-radius: 5px;
@@ -117,7 +121,19 @@ body {
 
 .deadline_input {
     height: 70%;
-    width: 16%;
+    width: 17%;
+    outline: none;
+    text-align: left;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0 20px 0 53px;
+    border: 1px solid #999;
+}
+
+.deadline_text_input {
+    height: 70%;
+    width: 16.5%;
     outline: none;
     text-align: left;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -148,7 +164,7 @@ body {
 }
 
 .category-select {
-    width: 175px;
+    width: 160px;
     height: 30px;
     outline: none;
     text-align: left;
@@ -173,7 +189,7 @@ body {
 
 
 .tag-select {
-    width: 175px;
+    width: 108px;
     height: 30px;
     outline: none;
     text-align: left;
@@ -198,6 +214,7 @@ body {
 
 .priority-select {
     outline: none;
+    width: 128px;
     height: 30px;
     text-align: left;
     font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
@@ -441,6 +458,9 @@ li {
     font-family: Verdana, Geneva, Tahoma, sans-serif
 }
 
+.subtask-input-container {
+    margin-right: 1100px;
+}
 /* .task-box.overflow{
   overflow-y: auto;
   max-height: 300px;

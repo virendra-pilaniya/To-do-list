@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 </head>
 
 <body>
@@ -15,16 +16,20 @@
         <div class="task-input">
             <input type="text" placeholder="Add a new task" class="text_input">
             <input type="datetime-local" placeholder="Add deadline" class="deadline_input">
-            <label for="priority-select" class="p_s">Priority:</label>
+            OR
+            <input type="text" placeholder="Add task & deadline" class="deadline_text_input">
+            <label for="priority-select" class="p_s">Prio:</label>
             <select class="priority-select" id="priority-select">
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
             </select>
-            <label for="category-select" class="c_s">Category:</label>
+            <label for="category-select" class="c_s">Cat:</label>
             <input type="text" placeholder="Category" class="category-select">
             <label for="tag-select" class="t_s">Tags:</label>
             <input type="text" placeholder="Tags" class="tag-select">
+            <label for="important-checkbox" class="c_s">Imp:</label>
+            <input type="checkbox" id="important-checkbox">
             <button class="addTasking">Add</button>
 
         </div>
@@ -36,17 +41,19 @@
 
             <button class="show-activity-btn">Show Activity</button>
             <button class="expired">Expired Tasks</button>
-            <label for="priority-select" class="p_s">Search:</label>
+            <label for="" class="p_s">Search:</label>
             <input type="search" placeholder="task,etc...." id="search">
-            <label for="priority-select" class="p_s">Clear All:</label>
+            <label for="" class="p_s">Clear All:</label>
             <button class="clear-btn">Clear All</button>
 
         </div>
         <div class="controls">
-            <label for="priority-select" class="p_s">Filtering:</label>
+            <label for="" class="p_s">Filtering:</label>
             <input type="text" placeholder="Category" class="category-select-1">
             <button class="filter-category-btn">Filter by Category</button>
+            <label for="" class="p_s">Src</label>
             <input type="date" id="startDate" placeholder="Start Date" class="xdate">
+            <label for="" class="p_s">End</label>
             <input type="date" id="endDate" placeholder="End Date" class="xdate">
             <button class="filter-date-btn">Filter by Date</button>
 
@@ -67,16 +74,17 @@
                 <span id="pending">Pending</span>
                 <span id="completed">Completed</span>
             </div>
+            <div class="subtask-input-container" style="display: none;">
+                <input type="text" placeholder="Add a new subtask" class="subtask-container">
+                <button class="addSubtaskBtn" onclick="addSubtask()">Add</button>
+            </div>
         </div>
 
         <ul class="task-box" id="task-box"></ul>
         <ul class="activity-box"></ul>
 
     </div>
-    <div class="subtask-input-container" style="display: none;">
-        <input type="text" placeholder="Add a new subtask" class="subtask-container">
-        <button class="addSubtaskBtn" onclick="addSubtask()">Add</button>
-    </div>
+
     <script src="script.js"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 </body>
